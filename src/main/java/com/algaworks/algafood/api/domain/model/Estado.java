@@ -11,7 +11,8 @@ import javax.persistence.*;
 public class Estado {
   @Id
   @EqualsAndHashCode.Include
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "estado_id_generator")
+  @SequenceGenerator(name = "estado_id_generator", sequenceName = "estado_id_seq", allocationSize = 1)
   private Long id;
 
   @Column(nullable = false)

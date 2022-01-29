@@ -13,7 +13,8 @@ public class Restaurante {
 
   @Id
   @EqualsAndHashCode.Include
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "restaurante_id_generator")
+  @SequenceGenerator(name = "restaurante_id_generator", sequenceName = "restaurante_id_seq", allocationSize = 1)
   private Long id;
 
   @Column(nullable = false)

@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.infrastructure.repository;
 
 import com.algaworks.algafood.api.domain.model.Permissao;
 import com.algaworks.algafood.api.domain.repository.PermissaoRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,11 @@ public class PermissaoRepositoryImpl implements PermissaoRepository {
   @Transactional
   public void remover(Permissao permissao) {
     permissao = buscar(permissao.getId());
+
+    if(permissao == null) {
+      throw new EmptyResultDataAccessException(1);
+    }
+
     manager.remove(permissao);
   }
 

@@ -11,7 +11,8 @@ import javax.persistence.*;
 public class Permissao {
   @Id
   @EqualsAndHashCode.Include
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "permissao_id_generator")
+  @SequenceGenerator(name = "permissao_id_generator", sequenceName = "permissao_id_seq", allocationSize = 1)
   private Long id;
 
   @Column(nullable = false)
