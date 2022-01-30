@@ -18,7 +18,13 @@ public class CidadeService {
   private CidadeRepository cidadeRepository;
 
   public Cidade salvar(Cidade cidade) {
-    return cidadeRepository.salvar(cidade);
+    try {
+      return cidadeRepository.salvar(cidade);
+
+    } catch (EmptyResultDataAccessException e) {
+      throw new EntidadeNaoEncontradaException(
+          String.format("Cidade de código %d não pode ser encontrada", cidade.getId()));
+    }
   }
 
   public void remover(Long id) {
