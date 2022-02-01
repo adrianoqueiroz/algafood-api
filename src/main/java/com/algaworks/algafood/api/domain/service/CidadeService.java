@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.domain.service;
 import com.algaworks.algafood.api.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.api.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.api.domain.model.Cidade;
+import com.algaworks.algafood.api.domain.model.Estado;
 import com.algaworks.algafood.api.domain.repository.CidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CidadeService {
@@ -17,9 +19,19 @@ public class CidadeService {
   @Autowired
   private CidadeRepository cidadeRepository;
 
+  @Autowired
+  private EstadoService estadoService;
+
   public Cidade salvar(Cidade cidade) {
     try {
-      return cidadeRepository.salvar(cidade);
+      Optional<Estado> estado = estadoService.buscar(cidade.getEstado().getId());
+
+      if(estado.isEmpty()) {
+        throw new EntidadeNaoEncontradaException(
+            String.format("Não existe estado com código %d", cidade.getEstado().getId()));
+      }
+      cidade.setEstado(estado.get());
+      return cidadeRepository.save(cidade);
 
     } catch (EmptyResultDataAccessException e) {
       throw new EntidadeNaoEncontradaException(
@@ -29,7 +41,7 @@ public class CidadeService {
 
   public void remover(Long id) {
     try {
-      cidadeRepository.remover(id);
+      cidadeRepository.deleteById(id);
 
     } catch (EmptyResultDataAccessException e) {
        throw new EntidadeNaoEncontradaException(
@@ -41,11 +53,11 @@ public class CidadeService {
     }
   }
 
-  public Cidade buscar(Long id) {
-    return cidadeRepository.buscar(id);
+  public Optional<Cidade> buscar(Long id) {
+    return cidadeRepository.findById(id);
   }
 
   public List<Cidade> listar() {
-    return cidadeRepository.listar();
+    return cidadeRepository.findAll();
   }
 }

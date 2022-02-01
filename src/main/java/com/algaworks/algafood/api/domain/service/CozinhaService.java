@@ -7,9 +7,11 @@ import com.algaworks.algafood.api.domain.repository.CozinhaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CozinhaService {
@@ -18,12 +20,12 @@ public class CozinhaService {
   private CozinhaRepository cozinhaRepository;
 
   public Cozinha salvar(Cozinha cozinha) {
-    return cozinhaRepository.salvar(cozinha);
+    return cozinhaRepository.save(cozinha);
   }
 
   public void remover(Long id) {
     try {
-      cozinhaRepository.remover(id);
+      cozinhaRepository.deleteById(id);
 
     } catch (EmptyResultDataAccessException e) {
        throw new EntidadeNaoEncontradaException(
@@ -35,11 +37,11 @@ public class CozinhaService {
     }
   }
 
-  public Cozinha buscar(Long id) {
-    return cozinhaRepository.buscar(id);
+  public Optional<Cozinha> buscar(Long id) {
+    return cozinhaRepository.findById(id);
   }
 
   public List<Cozinha> listar() {
-    return cozinhaRepository.listar();
+    return cozinhaRepository.findAll();
   }
 }

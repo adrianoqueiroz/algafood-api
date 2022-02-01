@@ -3,8 +3,8 @@ insert into cozinha (id, nome) values (2, 'Indiana');
 SELECT setval('cozinha_id_seq', (SELECT MAX(id) FROM cozinha));
 
 insert into restaurante (id, nome, taxa_frete, cozinha_id) values (1, 'Thai Gourmet', 10, 1);
-insert into restaurante (id, nome, taxa_frete, cozinha_id) values (2, 'Thai Delivery', 10, 2);
-insert into restaurante (id, nome, taxa_frete, cozinha_id) values (3, 'Tuk Tuk Comida Indiana', 10, 2);
+insert into restaurante (id, nome, taxa_frete, cozinha_id) values (2, 'Thai Delivery', 12, 2);
+insert into restaurante (id, nome, taxa_frete, cozinha_id) values (3, 'Tuk Tuk Comida Indiana', 15, 2);
 SELECT setval('restaurante_id_seq', (SELECT MAX(id) FROM restaurante));
 
 insert into forma_pagamento (id, descricao) values (1, 'Cartão de Crédito');

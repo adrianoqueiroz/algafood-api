@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -29,9 +30,9 @@ public class RestauranteController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Restaurante> buscar(@PathVariable Long id) {
-    Restaurante restaurante = restauranteService.buscar(id);
+    Optional<Restaurante> restaurante = restauranteService.buscar(id);
 
-    return restaurante != null ? ResponseEntity.ok(restaurante) : ResponseEntity.notFound().build();
+    return restaurante.isPresent() ? ResponseEntity.ok(restaurante.get()) : ResponseEntity.notFound().build();
   }
 
   @GetMapping
@@ -67,16 +68,16 @@ public class RestauranteController {
 
   @PutMapping("/{id}")
   public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
-    Restaurante restauranteAtual = restauranteService.buscar(id);
+    Optional<Restaurante> restauranteAtual = restauranteService.buscar(id);
 
     try {
-      if (restauranteAtual == null) {
+      if (restauranteAtual.isEmpty()) {
         String message = String.format("Restaurante com código %d não encontrado", id);
         throw new EntidadeNaoEncontradaException(message);
       }
 
-      BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
-      restaurante = restauranteService.salvar(restauranteAtual);
+      BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id");
+      restaurante = restauranteService.salvar(restauranteAtual.get());
       return ResponseEntity.ok(restaurante);
 
     } catch (EntidadeNaoEncontradaException e) {
@@ -88,16 +89,16 @@ public class RestauranteController {
   @PatchMapping("/{id}")
   public ResponseEntity<?> atualizarParcialmente(@PathVariable Long id, @RequestBody Map<String, Object> campos) {
 
-    Restaurante restauranteAtual = restauranteService.buscar(id);
+    Optional<Restaurante> restauranteAtual = restauranteService.buscar(id);
 
-    if (restauranteAtual == null) {
+    if (restauranteAtual.isEmpty()) {
       String message = String.format("Restaurante com código %d não encontrado", id);
       throw new EntidadeNaoEncontradaException(message);
     }
 
-    merge(campos, restauranteAtual);
+    merge(campos, restauranteAtual.get());
 
-    return atualizar(id, restauranteAtual);
+    return atualizar(id, restauranteAtual.get());
 
   }
 
