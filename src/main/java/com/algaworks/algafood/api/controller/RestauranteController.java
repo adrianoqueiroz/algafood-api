@@ -44,6 +44,7 @@ public class RestauranteController {
   public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
     try {
       restaurante = restauranteService.salvar(restaurante);
+      restaurante.setNome(restaurante.getNome());
       return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
 
     } catch (EntidadeNaoEncontradaException e) {
@@ -76,7 +77,8 @@ public class RestauranteController {
         throw new EntidadeNaoEncontradaException(message);
       }
 
-      BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id");
+      BeanUtils.copyProperties(restaurante, restauranteAtual.get(),
+          "id", "formasPagamento", "endereco", "createdAt", "produtos");
       restaurante = restauranteService.salvar(restauranteAtual.get());
       return ResponseEntity.ok(restaurante);
 

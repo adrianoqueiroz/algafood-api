@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static com.algaworks.algafood.api.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
+import static com.algaworks.algafood.api.infrastructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
+
 @RestController
 @RequestMapping("/teste")
 public class TesteController {
@@ -31,6 +34,11 @@ public class TesteController {
   @GetMapping("/cozinhas/unica-por-nome")
   public Optional<Cozinha> cozinhaPorNome(String nome) {
     return cozinhaRepository.findByNomeContainingIgnoreCase(nome);
+  }
+
+  @GetMapping("/cozinha/primeiro")
+  Optional<Cozinha> cozinhaPrimeiro() {
+    return cozinhaRepository.buscarPrimeiro();
   }
 
   @GetMapping("/restaurantes/por-nome")
@@ -61,5 +69,15 @@ public class TesteController {
   @GetMapping("/restaurantes/count-por-cozinha-id")
   public int countPorCozinhaId(Long cozinhaId) {
     return restauranteRepository.countByCozinhaId(cozinhaId);
+  }
+
+  @GetMapping("/restaurantes/com-frete-gratis")
+  public List<Restaurante> restaurantesComFreteGratis(String nome) {
+    return restauranteRepository.findComFreteGratis(nome);
+  }
+
+  @GetMapping("/restaurantes/primeiro")
+  Optional<Restaurante> restaurantePrimeiro() {
+    return restauranteRepository.buscarPrimeiro();
   }
 }

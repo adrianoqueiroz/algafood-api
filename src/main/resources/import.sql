@@ -1,55 +1,41 @@
 insert into cozinha (id, nome) values (1, 'Tailandesa');
 insert into cozinha (id, nome) values (2, 'Indiana');
-SELECT setval('cozinha_id_seq', (SELECT MAX(id) FROM cozinha));
+insert into cozinha (id, nome) values (3, 'Argentina');
+insert into cozinha (id, nome) values (4, 'Brasileira');
 
-insert into restaurante (id, nome, taxa_frete, cozinha_id) values (1, 'Thai Gourmet', 10, 1);
-insert into restaurante (id, nome, taxa_frete, cozinha_id) values (2, 'Thai Delivery', 12, 2);
-insert into restaurante (id, nome, taxa_frete, cozinha_id) values (3, 'Tuk Tuk Comida Indiana', 15, 2);
-SELECT setval('restaurante_id_seq', (SELECT MAX(id) FROM restaurante));
+insert into estado (id, nome, sigla) values (1, 'Minas Gerais', 'MG');
+insert into estado (id, nome, sigla) values (2, 'São Paulo', 'SP');
+insert into estado (id, nome, sigla) values (3, 'Ceará', 'CE');
 
-insert into forma_pagamento (id, descricao) values (1, 'Cartão de Crédito');
-insert into forma_pagamento (id, descricao) values (2, 'PIX');
-insert into forma_pagamento (id, descricao) values (3, 'DOC');
-insert into forma_pagamento (id, descricao) values (4, 'TED');
-SELECT setval('forma_pagamento_id_seq', (SELECT MAX(id) FROM forma_pagamento));
+insert into cidade (id, nome, estado_id) values (1, 'Uberlândia', 1);
+insert into cidade (id, nome, estado_id) values (2, 'Belo Horizonte', 1);
+insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 2);
+insert into cidade (id, nome, estado_id) values (4, 'Campinas', 2);
+insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 3);
 
-insert into permissao (id, nome, descricao) values (1, 'Consultar', 'Permite consultar dados');
-insert into permissao (id, nome, descricao) values (2, 'Cadastrar', 'Permite cadastrar dados');
-insert into permissao (id, nome, descricao) values (3, 'Atualizar', 'Permite atualizar dados');
-insert into permissao (id, nome, descricao) values (4, 'Excluir', 'Permite excluir dados');
-SELECT setval('permissao_id_seq', (SELECT MAX(id) FROM permissao));
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values (nextval('restaurante_id_seq'), 'Thai Gourmet', 10, 1, current_timestamp, current_timestamp, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at) values (nextval('restaurante_id_seq'), 'Thai Delivery', 9.50, 1, current_timestamp, current_timestamp);
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at) values (nextval('restaurante_id_seq'), 'Tuk Tuk Comida Indiana', 15, 2, current_timestamp, current_timestamp );
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at) values (nextval('restaurante_id_seq'), 'Java Steakhouse', 12, 3, current_timestamp, current_timestamp);
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at) values (nextval('restaurante_id_seq'), 'Lanchonete do Tio Sam', 11, 4, current_timestamp, current_timestamp);
+insert into restaurante (id, nome, taxa_frete, cozinha_id,  created_at, updated_at) values (nextval('restaurante_id_seq'), 'Bar da Maria', 6, 4, current_timestamp, current_timestamp);
 
-insert into estado (id, nome, sigla) values (1, 'Acre', 'AC');
-insert into estado (id, nome, sigla) values (2, 'Alagoas', 'AL');
-insert into estado (id, nome, sigla) values (3, 'Amapá', 'AP');
-insert into estado (id, nome, sigla) values (4, 'Amazonas', 'AM');
-insert into estado (id, nome, sigla) values (5, 'Bahia', 'BA');
-insert into estado (id, nome, sigla) values (6, 'Ceará', 'CE');
-insert into estado (id, nome, sigla) values (7, 'Distrito Federal', 'DF');
-insert into estado (id, nome, sigla) values (8, 'Espírito Santo', 'ES');
-insert into estado (id, nome, sigla) values (9, 'Goiás', 'GO');
-insert into estado (id, nome, sigla) values (10, 'Maranhão', 'MA');
-insert into estado (id, nome, sigla) values (11, 'Mato Grosso', 'MT');
-insert into estado (id, nome, sigla) values (12, 'Mato Grosso do Sul', 'MS');
-insert into estado (id, nome, sigla) values (13, 'Minas Gerais', 'MG');
-insert into estado (id, nome, sigla) values (14, 'Pará', 'PA');
-insert into estado (id, nome, sigla) values (15, 'Paraíba', 'PB');
-insert into estado (id, nome, sigla) values (16, 'Paraná', 'PR');
-insert into estado (id, nome, sigla) values (17, 'Pernambuco', 'PE');
-insert into estado (id, nome, sigla) values (18, 'Piauí', 'PI');
-insert into estado (id, nome, sigla) values (19, 'Rio de Janeiro', 'RJ');
-insert into estado (id, nome, sigla) values (20, 'Rio Grande do Norte', 'RN');
-insert into estado (id, nome, sigla) values (21, 'Rio Grande do Sul', 'RS');
-insert into estado (id, nome, sigla) values (22, 'Rondônia', 'RO');
-insert into estado (id, nome, sigla) values (23, 'Roraima', 'RR');
-insert into estado (id, nome, sigla) values (24, 'Santa Catarina', 'SC');
-insert into estado (id, nome, sigla) values (25, 'São Paulo', 'SP');
-insert into estado (id, nome, sigla) values (26, 'Sergipe', 'SE');
-insert into estado (id, nome, sigla) values (27, 'Tocantins', 'TO');
-SELECT setval('estado_id_seq', (SELECT MAX(id) FROM estado));
+insert into forma_pagamento (id, descricao) values (1, 'Cartão de crédito');
+insert into forma_pagamento (id, descricao) values (2, 'Cartão de débito');
+insert into forma_pagamento (id, descricao) values (3, 'Dinheiro');
 
-insert into cidade (id, nome, estado_id) values (1, 'Abaíra', 1);
-insert into cidade (id, nome, estado_id) values (2, 'Salvador', 5);
-insert into cidade (id, nome, estado_id) values (3, 'Brotas de Macaúbas', 5);
-insert into cidade (id, nome, estado_id) values (4, 'São Paulo', 25);
-SELECT setval('cidade_id_seq', (SELECT MAX(id) FROM cidade));
+insert into restaurante_has_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
+
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'Porco com molho agridoce', 'Deliciosa carne suína ao molho especial', 78.90, true, 1);
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'Camarão tailandês', '16 camarões grandes ao molho picante', 110, true, 1);
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'Salada picante com carne grelhada', 'Salada de folhas com cortes finos de carne bovina grelhada e nosso molho especial de pimenta vermelha', 87.20, true, 2);
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'Garlic Naan', 'Pão tradicional indiano com cobertura de alho', 21, true, 3);
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'Murg Curry', 'Cubos de frango preparados com molho curry e especiarias', 43, true, 3);
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'Bife Ancho', 'Corte macio e suculento, com dois dedos de espessura, retirado da parte dianteira do contrafilé', 79, true, 4);
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'T-Bone', 'Corte muito saboroso, com um osso em formato de T, sendo de um lado o contrafilé e do outro o filé mignon', 89, true, 4);
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, true, 5);
+insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (nextval('produto_id_seq'), 'Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, true, 6);
+
+insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
+insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+

@@ -35,7 +35,6 @@ public class CidadeController {
   }
 
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<?> adicionar(@RequestBody Cidade cidade) {
     try {
       Cidade cidadeSalva = cidadeService.salvar(cidade);

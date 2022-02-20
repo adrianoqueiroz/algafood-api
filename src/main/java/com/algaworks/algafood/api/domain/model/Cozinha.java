@@ -1,12 +1,12 @@
 package com.algaworks.algafood.api.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.List;
 
-@JsonRootName("cozinha")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
@@ -19,4 +19,8 @@ public class Cozinha {
 
   @Column(nullable = false)
   private String nome;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "cozinha")
+  List<Restaurante> restaurantes;
 }

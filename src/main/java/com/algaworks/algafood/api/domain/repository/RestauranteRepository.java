@@ -1,28 +1,31 @@
 package com.algaworks.algafood.api.domain.repository;
 
 import com.algaworks.algafood.api.domain.model.Restaurante;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-public interface RestauranteRepository extends JpaRepository<Restaurante, Long>, RestauranteRepositoryQueries {
+@Repository
+public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long>, RestauranteRepositoryQueries,
+    JpaSpecificationExecutor<Restaurante> {
 
-  public List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
+  @Query("from Restaurante r join r.cozinha join fetch r.formasPagamento")
+  List<Restaurante> findAll();
 
-//  public List<Restaurante> findByNomeContainingAndCozinhaId(String nome, Long cozinhaId);
+  List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 
-//  @Query("select r from Restaurante r where r.nome like %:nome% and r.cozinha.id = :cozinhaId")
-  public List<Restaurante> consultarPorNome(String nome, @Param("cozinhaId") Long cozinhaId);
+  List<Restaurante> consultarPorNome(String nome, @Param("cozinhaId") Long cozinhaId);
 
-  public Optional<Restaurante> findFirstByNomeContaining(String nome);
+  Optional<Restaurante> findFirstByNomeContaining(String nome);
 
-  public List<Restaurante> findTop2ByNomeContaining(String nome);
+  List<Restaurante> findTop2ByNomeContaining(String nome);
 
-  public int countByCozinhaId(Long cozinhaId);
+  int countByCozinhaId(Long cozinhaId);
 
-  public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
+  List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
 }
