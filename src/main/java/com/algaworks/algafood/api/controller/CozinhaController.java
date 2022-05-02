@@ -50,8 +50,8 @@ public class CozinhaController {
       cozinhaService.remover(id);
       return ResponseEntity.noContent().build();
 
-    } catch (EntidadeNaoEncontradaException e) {
-      return ResponseEntity.notFound().build();
+//    } catch (EntidadeNaoEncontradaException e) {
+//      return ResponseEntity.notFound().build();
 
     } catch (EntidadeEmUsoException e) {
       return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage() );

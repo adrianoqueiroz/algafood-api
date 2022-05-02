@@ -49,7 +49,7 @@ public class Restaurante {
   @Column(nullable = false, columnDefinition = "timestamp")
   private LocalDateTime updatedAt;
 
-//  @JsonIgnore
+  @JsonIgnore
   @ManyToMany
   @JoinTable(name = "restaurante_has_forma_pagamento",
       joinColumns = @JoinColumn(name = "restaurante_id"),
