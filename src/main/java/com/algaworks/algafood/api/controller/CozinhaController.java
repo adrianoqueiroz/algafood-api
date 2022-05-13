@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,19 +44,24 @@ public class CozinhaController {
         ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<? > remover(@PathVariable Long id) {
-
-    try {
-      cozinhaService.remover(id);
-      return ResponseEntity.noContent().build();
-
+//  @DeleteMapping("/{id}")
+//  public ResponseEntity<? > remover(@PathVariable Long id) {
+//
+//    try {
+//      cozinhaService.remover(id);
+//      return ResponseEntity.noContent().build();
+//
 //    } catch (EntidadeNaoEncontradaException e) {
 //      return ResponseEntity.notFound().build();
+//    } catch (EntidadeEmUsoException e) {
+//      return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage() );
+//    }
+//  }
 
-    } catch (EntidadeEmUsoException e) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage() );
-    }
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void remover(@PathVariable Long id) {
+    cozinhaService.remover(id);
   }
 
   @PutMapping("/{id}")
@@ -67,6 +73,6 @@ public class CozinhaController {
     }
 
     BeanUtils.copyProperties(cozinha, cozinhaAtual.get() , "id");
-    return ResponseEntity.ok(cozinhaService.salvar(cozinhaAtual.get() ));
+    return ResponseEntity.ok(cozinhaService.salvar(cozinhaAtual.get()));
   }
 }
