@@ -1,7 +1,7 @@
 package com.algaworks.algafood.api.domain.service;
 
+import com.algaworks.algafood.api.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.api.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.api.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.api.domain.model.Cozinha;
 import com.algaworks.algafood.api.domain.repository.CozinhaRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CozinhaService {
 
-  public static final String COZINHA_NAO_ENCONTRADA = "Não existe cozinha com código %d";
   public static final String COZINHA_EM_USO = "Cozinha de código %d não pode ser removida pois está em uso";
 
   private final CozinhaRepository cozinhaRepository;
@@ -29,7 +28,7 @@ public class CozinhaService {
       cozinhaRepository.deleteById(id);
 
     } catch (EmptyResultDataAccessException e) {
-       throw new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA, id));
+       throw new CozinhaNaoEncontradaException(id);
     } catch (DataIntegrityViolationException e) {
         throw new EntidadeEmUsoException(String.format(COZINHA_EM_USO, id));
     }
@@ -37,7 +36,7 @@ public class CozinhaService {
 
   public Cozinha buscar(Long id) {
     return cozinhaRepository.findById(id)
-        .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA, id)));
+        .orElseThrow(() -> new CozinhaNaoEncontradaException(id));
   }
 
   public List<Cozinha> listar() {
