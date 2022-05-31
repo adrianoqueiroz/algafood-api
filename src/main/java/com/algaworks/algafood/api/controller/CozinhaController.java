@@ -1,78 +1,58 @@
 package com.algaworks.algafood.api.controller;
 
-import com.algaworks.algafood.api.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.api.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.api.domain.model.Cozinha;
 import com.algaworks.algafood.api.domain.service.CozinhaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/cozinhas")
 public class CozinhaController {
 
-  @Autowired
-  private CozinhaService cozinhaService;
+    private final CozinhaService cozinhaService;
 
-
-
-  @GetMapping("/{id}")
-  public ResponseEntity<Cozinha> buscar(@PathVariable Long id) {
-    Optional<Cozinha> cozinha = cozinhaService.buscar(id);
-
-    return cozinha.isPresent() ? ResponseEntity.ok(cozinha.get()) : ResponseEntity.notFound().build();
-  }
-
-  @GetMapping
-  public List<Cozinha> listar() {
-    return cozinhaService.listar();
-  }
-
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha) {
-    Cozinha cozinhaSalva = cozinhaService.salvar(cozinha);
-
-    return cozinhaSalva != null ? ResponseEntity.ok(cozinhaSalva) :
-        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-  }
-
-//  @DeleteMapping("/{id}")
-//  public ResponseEntity<? > remover(@PathVariable Long id) {
-//
-//    try {
-//      cozinhaService.remover(id);
-//      return ResponseEntity.noContent().build();
-//
-//    } catch (EntidadeNaoEncontradaException e) {
-//      return ResponseEntity.notFound().build();
-//    } catch (EntidadeEmUsoException e) {
-//      return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage() );
-//    }
-//  }
-
-  @DeleteMapping("/{id}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void remover(@PathVariable Long id) {
-    cozinhaService.remover(id);
-  }
-
-  @PutMapping("/{id}")
-  public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
-    Optional<Cozinha> cozinhaAtual = cozinhaService.buscar(id);
-
-    if (cozinhaAtual.isEmpty()) {
-      return ResponseEntity.notFound().build();
+    @GetMapping("/{id}")
+    public Cozinha buscar(@PathVariable Long id) {
+        return cozinhaService.buscar(id);
     }
 
-    BeanUtils.copyProperties(cozinha, cozinhaAtual.get() , "id");
-    return ResponseEntity.ok(cozinhaService.salvar(cozinhaAtual.get()));
-  }
+    @GetMapping
+    public List<Cozinha> listar() {
+        return cozinhaService.listar();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cozinha adicionar(@RequestBody Cozinha cozinha) {
+        return cozinhaService.salvar(cozinha);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long id) {
+        cozinhaService.remover(id);
+    }
+
+    @PutMapping("/{id}")
+    public Cozinha atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+        Cozinha cozinhaAtual = cozinhaService.buscar(id);
+
+        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+
+        return cozinhaService.salvar(cozinhaAtual);
+    }
 }

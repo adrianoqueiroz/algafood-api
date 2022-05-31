@@ -10,11 +10,13 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CozinhaService {
+
+  public static final String COZINHA_NAO_ENCONTRADA = "Não existe cozinha com código %d";
+  public static final String COZINHA_EM_USO = "Cozinha de código %d não pode ser removida pois está em uso";
 
   private final CozinhaRepository cozinhaRepository;
 
@@ -27,15 +29,15 @@ public class CozinhaService {
       cozinhaRepository.deleteById(id);
 
     } catch (EmptyResultDataAccessException e) {
-       throw new EntidadeNaoEncontradaException(String.format("Não existe cozinha com código %d", id));
+       throw new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA, id));
     } catch (DataIntegrityViolationException e) {
-        throw new EntidadeEmUsoException(
-            String.format("Cozinha de código %d não pode ser removida pois está em uso", id));
+        throw new EntidadeEmUsoException(String.format(COZINHA_EM_USO, id));
     }
   }
 
-  public Optional<Cozinha> buscar(Long id) {
-    return cozinhaRepository.findById(id);
+  public Cozinha buscar(Long id) {
+    return cozinhaRepository.findById(id)
+        .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA, id)));
   }
 
   public List<Cozinha> listar() {
