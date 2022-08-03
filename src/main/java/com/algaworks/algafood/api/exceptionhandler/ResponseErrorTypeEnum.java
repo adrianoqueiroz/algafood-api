@@ -8,7 +8,8 @@ public enum ResponseErrorTypeEnum {
     RECURSO_NAO_ENCONTRADO("/recurso-nao-encontrado", "Recurso não encontrado"),
     ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio"),
-    PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro Inválido"),
+    PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido"),
+    DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos"),
     ERRO_DE_SISTEMA("/erro-de-sistema", "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.");
 
     private final String title;
