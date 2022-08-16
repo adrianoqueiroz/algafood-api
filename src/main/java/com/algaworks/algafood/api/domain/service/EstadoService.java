@@ -1,7 +1,6 @@
 package com.algaworks.algafood.api.domain.service;
 
 import com.algaworks.algafood.api.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.api.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.api.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.api.domain.model.Estado;
 import com.algaworks.algafood.api.domain.repository.EstadoRepository;
@@ -9,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,10 +20,12 @@ public class EstadoService {
 
   private final EstadoRepository estadoRepository;
 
+  @Transactional
   public Estado salvar(Estado estado) {
     return estadoRepository.save(estado);
   }
 
+  @Transactional
   public void remover(Long id) {
     try {
       estadoRepository.deleteById(id);

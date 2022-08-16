@@ -1,14 +1,13 @@
 package com.algaworks.algafood.api.domain.model;
 
 import com.algaworks.algafood.api.core.validation.Groups;
-import com.algaworks.algafood.api.core.validation.Multiplo;
 import com.algaworks.algafood.api.core.validation.TaxaFrete;
 import com.algaworks.algafood.api.core.validation.ValorZeroIncluiDescricao;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
@@ -30,7 +29,6 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 import java.math.BigDecimal;
@@ -38,10 +36,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Entity
 @ValorZeroIncluiDescricao(valorField = "taxaFrete",
     descricaoField = "nome", descricaoObrigatoria = "Frete Grátis")
@@ -65,26 +66,21 @@ public class Restaurante {
   @NotNull
   @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
   @Valid
-  @JsonIgnoreProperties("hibernateLazyInitializer")
   @ManyToOne //(fetch = FetchType.LAZY)
   @JoinColumn(name = "cozinha_id", nullable = false)
   private Cozinha cozinha;
 
-  @JsonIgnore
   @Embedded
   private Endereco endereco;
 
-  @JsonIgnore
   @CreationTimestamp
   @Column(nullable = false, columnDefinition = "timestamp")
   private LocalDateTime createdAt;
 
-  @JsonIgnore
   @UpdateTimestamp
   @Column(nullable = false, columnDefinition = "timestamp")
   private LocalDateTime updatedAt;
 
-  @JsonIgnore
   @ManyToMany
   @JoinTable(name = "restaurante_has_forma_pagamento",
       joinColumns = @JoinColumn(name = "restaurante_id"),
@@ -92,7 +88,6 @@ public class Restaurante {
   @ToString.Exclude
   private List<FormaPagamento> formasPagamento;
 
-  @JsonIgnore
   @OneToMany(mappedBy = "restaurante")
   @ToString.Exclude
   private List<Produto> produtos;

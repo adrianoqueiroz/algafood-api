@@ -2,8 +2,11 @@ package com.algaworks.algafood.api.domain.model;
 
 import com.algaworks.algafood.api.core.validation.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -13,6 +16,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cozinha {
   @NotNull(groups = Groups.CozinhaId.class)
   @Id

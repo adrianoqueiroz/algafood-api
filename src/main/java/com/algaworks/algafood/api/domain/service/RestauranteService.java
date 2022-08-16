@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class RestauranteService {
 
     private final CozinhaService cozinhaService;
 
+    @Transactional
     public Restaurante salvar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
         Cozinha cozinha = cozinhaService.buscar(cozinhaId);
@@ -31,6 +33,7 @@ public class RestauranteService {
         return restauranteRepository.save(restaurante);
     }
 
+    @Transactional
     public void remover(Long id) {
         try {
             restauranteRepository.deleteById(id);
