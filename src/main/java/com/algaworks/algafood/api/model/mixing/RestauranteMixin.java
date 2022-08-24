@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public abstract class RestauranteMixin {
+public class RestauranteMixin {
 
     @JsonIgnoreProperties(value = { "hibernateLazyInitializer" , "nome" }, allowGetters = true)
     private Cozinha cozinha;
