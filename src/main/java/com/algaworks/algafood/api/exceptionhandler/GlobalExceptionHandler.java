@@ -1,9 +1,9 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import com.algaworks.algafood.api.core.validation.ValidacaoException;
-import com.algaworks.algafood.api.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.api.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.api.domain.exception.NegocioException;
+import com.algaworks.algafood.core.validation.ValidacaoException;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -27,7 +27,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -255,12 +255,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         if(body == null) {
         body = ResponseError.builder()
+            .timestamp(OffsetDateTime.now())
             .title(status.getReasonPhrase())
             .status(String.valueOf(status.value()))
             .userMessage(GENERIC_ERROR_MSG)
             .build();
         } else if(body instanceof String) {
             body = ResponseError.builder()
+                .timestamp(OffsetDateTime.now())
                 .title((String) body)
                 .status(String.valueOf(status.value()))
                 .userMessage(GENERIC_ERROR_MSG)
@@ -276,6 +278,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .type(responseErrorType.getUri())
             .title(responseErrorType.getTitle())
             .detail(detail)
-            .timestamp(LocalDateTime.now());
+            .timestamp(OffsetDateTime.now());
     }
 }

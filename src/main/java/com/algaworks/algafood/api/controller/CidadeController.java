@@ -1,9 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import com.algaworks.algafood.api.domain.exception.EstadoNaoEncontradoException;
-import com.algaworks.algafood.api.domain.exception.NegocioException;
-import com.algaworks.algafood.api.domain.model.Cidade;
-import com.algaworks.algafood.api.domain.service.CidadeService;
+import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
+import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Cidade;
+import com.algaworks.algafood.domain.service.CidadeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;

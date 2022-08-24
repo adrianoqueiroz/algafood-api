@@ -1,11 +1,10 @@
 package com.algaworks.algafood.api.controller;
 
-import com.algaworks.algafood.api.domain.model.Estado;
-import com.algaworks.algafood.api.domain.service.EstadoService;
+import com.algaworks.algafood.domain.model.Estado;
+import com.algaworks.algafood.domain.service.EstadoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

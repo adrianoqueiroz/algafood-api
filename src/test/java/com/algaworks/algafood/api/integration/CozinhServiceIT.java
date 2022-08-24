@@ -1,7 +1,7 @@
 package com.algaworks.algafood.api.integration;
 
-import com.algaworks.algafood.api.domain.model.Cozinha;
-import com.algaworks.algafood.api.domain.repository.CozinhaRepository;
+import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;

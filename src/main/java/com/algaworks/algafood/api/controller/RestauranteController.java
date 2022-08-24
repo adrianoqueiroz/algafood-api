@@ -1,10 +1,11 @@
 package com.algaworks.algafood.api.controller;
 
-import com.algaworks.algafood.api.core.validation.ValidacaoException;
-import com.algaworks.algafood.api.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.api.domain.exception.NegocioException;
-import com.algaworks.algafood.api.domain.model.Restaurante;
-import com.algaworks.algafood.api.domain.service.RestauranteService;
+import com.algaworks.algafood.api.model.RestauranteModel;
+import com.algaworks.algafood.core.validation.ValidacaoException;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,9 @@ public class RestauranteController {
     private final SmartValidator validator;
 
     @GetMapping("/{id}")
-    public Restaurante buscar(@PathVariable Long id) {
-        return restauranteService.buscar(id);
+    public RestauranteModel buscar(@PathVariable Long id) {
+        Restaurante restaurante = restauranteService.buscar(id);
+        return new RestauranteModel(restaurante);
     }
 
     @GetMapping

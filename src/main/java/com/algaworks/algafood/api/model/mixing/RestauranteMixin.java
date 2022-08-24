@@ -1,13 +1,13 @@
 package com.algaworks.algafood.api.model.mixing;
 
-import com.algaworks.algafood.api.domain.model.Cozinha;
-import com.algaworks.algafood.api.domain.model.Endereco;
-import com.algaworks.algafood.api.domain.model.FormaPagamento;
-import com.algaworks.algafood.api.domain.model.Produto;
+import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.Endereco;
+import com.algaworks.algafood.domain.model.FormaPagamento;
+import com.algaworks.algafood.domain.model.Produto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public abstract class RestauranteMixin {
@@ -19,10 +19,10 @@ public abstract class RestauranteMixin {
     private Endereco endereco;
 
     @JsonIgnore
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @JsonIgnore
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @JsonIgnore
     private List<FormaPagamento> formasPagamento;
