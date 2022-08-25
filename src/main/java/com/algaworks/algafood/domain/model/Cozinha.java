@@ -20,7 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cozinha {
-  @NotNull(groups = Groups.CozinhaId.class)
   @Id
   @EqualsAndHashCode.Include
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cozinha_id_generator")
@@ -31,7 +30,6 @@ public class Cozinha {
   @Column(nullable = false)
   private String nome;
 
-  @JsonIgnore
   @OneToMany(mappedBy = "cozinha")
   List<Restaurante> restaurantes;
 }

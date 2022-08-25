@@ -25,7 +25,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-//@RequiredArgsConstructor
 @Entity
 @ValorZeroIncluiDescricao(valorField = "taxaFrete",
     descricaoField = "nome", descricaoObrigatoria = "Frete Grátis")
@@ -37,17 +36,13 @@ public class Restaurante {
   @SequenceGenerator(name = "restaurante_id_generator", sequenceName = "restaurante_id_seq", allocationSize = 1)
   private Long id;
 
-  @NotBlank
   @Column(nullable = false)
   private String nome;
 
-  @NotNull
   @TaxaFrete
   @Column(name = "taxa_frete", nullable = false)
   private BigDecimal taxaFrete;
 
-  @NotNull
-  @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
   @Valid
   @ManyToOne //(fetch = FetchType.LAZY)
   @JoinColumn(name = "cozinha_id", nullable = false)

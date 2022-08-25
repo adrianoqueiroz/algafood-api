@@ -1,16 +1,18 @@
 package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.model.RestauranteModel;
+import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
@@ -31,12 +33,14 @@ import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurantes")
 public class RestauranteController {
 
+    private static final ModelMapper modelMapper = new ModelMapper();
     private final RestauranteService restauranteService;
     private final SmartValidator validator;
 
@@ -47,15 +51,19 @@ public class RestauranteController {
     }
 
     @GetMapping
-    public List<Restaurante> listar() {
-        return restauranteService.listar();
+    public List<RestauranteModel> listar() {
+        return restauranteService.listar().stream()
+            .map(RestauranteModel::new)
+            .collect(Collectors.toList());
     }
 
     @PostMapping
-    public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+    public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
 
         try {
-            return restauranteService.salvar(restaurante);
+            Restaurante restaurante = restauranteInput.toDomainObject(restauranteInput);
+
+            return new RestauranteModel(restauranteService.salvar(restaurante));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -67,21 +75,22 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public Restaurante atualizar(@PathVariable Long id, @RequestBody @Valid Restaurante restaurante) {
+    public RestauranteModel atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
         Restaurante restauranteAtual = restauranteService.buscar(id);
 
-        BeanUtils.copyProperties(restaurante, restauranteAtual,
-            "id", "formasPagamento", "endereco", "createdAt", "produtos");
+        restauranteAtual.setCozinha(new Cozinha());
+
+        modelMapper.map(restauranteInput, restauranteAtual);
 
         try {
-            return restauranteService.salvar(restauranteAtual);
+            return new RestauranteModel(restauranteService.salvar(restauranteAtual));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
 
     @PatchMapping("/{id}")
-    public Restaurante atualizarParcialmente(@PathVariable Long id, @RequestBody Map<String, Object> campos, HttpServletRequest request) {
+    public RestauranteModel atualizarParcialmente(@PathVariable Long id, @RequestBody Map<String, Object> campos, HttpServletRequest request) {
 
         Restaurante restauranteAtual = restauranteService.buscar(id);
 
@@ -89,7 +98,7 @@ public class RestauranteController {
 
         validate(restauranteAtual, "restaurante");
 
-        return atualizar(id, restauranteAtual);
+        return atualizar(id, new RestauranteInput(restauranteAtual));
     }
 
     private void validate(Restaurante restaurante, String objectName) {
@@ -122,6 +131,5 @@ public class RestauranteController {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
         }
-
     }
 }
