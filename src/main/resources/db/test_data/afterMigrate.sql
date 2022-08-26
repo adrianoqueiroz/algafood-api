@@ -14,6 +14,7 @@ ALTER SEQUENCE estado_id_seq RESTART WITH 4;
 ALTER SEQUENCE cozinha_id_seq RESTART WITH 6;
 ALTER SEQUENCE permissao_id_seq RESTART WITH 3;
 ALTER SEQUENCE forma_pagamento_id_seq RESTART WITH 1;
+ALTER SEQUENCE grupo_id_seq RESTART WITH 1;
 
 insert into cozinha (id, nome) values (1, 'Tailandesa');
 insert into cozinha (id, nome) values (2, 'Indiana');
@@ -56,3 +57,4 @@ insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (
 insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
 
+insert into grupo (id, nome) values (nextval('grupo_id_seq'), 'Gerente'), (nextval('grupo_id_seq'), 'Vendedor'), (nextval('grupo_id_seq'), 'Secretária'), (nextval('grupo_id_seq'), 'Cadastrador');

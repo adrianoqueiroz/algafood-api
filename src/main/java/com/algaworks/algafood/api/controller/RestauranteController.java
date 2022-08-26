@@ -3,10 +3,14 @@ package com.algaworks.algafood.api.controller;
 import com.algaworks.algafood.api.model.RestauranteModel;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.core.validation.ValidacaoException;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.service.CidadeService;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,15 +82,19 @@ public class RestauranteController {
 
     @PutMapping("/{id}")
     public RestauranteModel atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
-        Restaurante restauranteAtual = restauranteService.buscar(id);
-
-        restauranteAtual.setCozinha(new Cozinha());
-
-        modelMapper.map(restauranteInput, restauranteAtual);
 
         try {
+            Restaurante restauranteAtual = restauranteService.buscar(id);
+
+            restauranteAtual.setCozinha(new Cozinha());
+
+            if(restauranteAtual.getEndereco().getCidade().getId() != null) {
+                restauranteAtual.getEndereco().setCidade(new Cidade());
+            }
+
+            modelMapper.map(restauranteInput, restauranteAtual);
             return new RestauranteModel(restauranteService.salvar(restauranteAtual));
-        } catch (EntidadeNaoEncontradaException e) {
+        } catch (CidadeNaoEncontradaException | CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }

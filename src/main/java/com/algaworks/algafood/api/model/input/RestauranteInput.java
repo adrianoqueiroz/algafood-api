@@ -31,10 +31,12 @@ public class RestauranteInput {
     @NotNull
     private CozinhaIdInput cozinha;
 
+    @Valid
+    @NotNull
+    private EnderecoInput endereco;
+
     public RestauranteInput(Restaurante restauranteAtual) {
-        this.nome = restauranteAtual.getNome();
-        this.taxaFrete = restauranteAtual.getTaxaFrete();
-        this.cozinha = new CozinhaIdInput(restauranteAtual.getCozinha());
+        modelMapper.map(restauranteAtual, this);
     }
 
     public Restaurante toDomainObject(RestauranteInput restauranteInput) {
