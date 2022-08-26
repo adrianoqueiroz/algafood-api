@@ -12,10 +12,13 @@ public class RestauranteModel {
     private final BigDecimal taxaFrete;
     private final CozinhaModel cozinha;
 
+    private final Boolean active;
+
     public RestauranteModel(Restaurante restaurante) {
         this.id = restaurante.getId();
         this.nome = restaurante.getNome();
         this.taxaFrete = restaurante.getTaxaFrete();
         this.cozinha = new CozinhaModel(restaurante.getCozinha());
+        this.active = restaurante.getActive();
     }
 }

@@ -1,19 +1,30 @@
 package com.algaworks.algafood.domain.model;
 
-import com.algaworks.algafood.core.validation.Groups;
 import com.algaworks.algafood.core.validation.TaxaFrete;
 import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -43,13 +54,14 @@ public class Restaurante {
   @Column(name = "taxa_frete", nullable = false)
   private BigDecimal taxaFrete;
 
-  @Valid
   @ManyToOne //(fetch = FetchType.LAZY)
   @JoinColumn(name = "cozinha_id", nullable = false)
   private Cozinha cozinha;
 
   @Embedded
   private Endereco endereco;
+
+  private Boolean active = Boolean.TRUE;
 
   @CreationTimestamp
   @Column(nullable = false, columnDefinition = "timestamp")
@@ -69,6 +81,14 @@ public class Restaurante {
   @OneToMany(mappedBy = "restaurante")
   @ToString.Exclude
   private List<Produto> produtos;
+
+    public void ativar() {
+        setActive(true);
+    }
+
+    public void inativar() {
+        setActive(false);
+    }
 
   @Override
   public boolean equals(Object o) {

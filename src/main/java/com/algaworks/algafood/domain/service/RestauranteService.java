@@ -37,7 +37,7 @@ public class RestauranteService {
     public void remover(Long id) {
         try {
             restauranteRepository.deleteById(id);
-
+            restauranteRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new RestauranteNaoEncontradoException(id);
 
@@ -45,6 +45,18 @@ public class RestauranteService {
             throw new EntidadeEmUsoException(
                 String.format(RESTAURANTE_EM_USO, id));
         }
+    }
+
+    @Transactional
+    public void ativar(Long restauranteId) {
+        Restaurante restaurante = buscar(restauranteId);
+        restaurante.ativar();
+    }
+
+    @Transactional
+    public void inativar(Long restauranteId) {
+        Restaurante restaurante = buscar(restauranteId);
+        restaurante.inativar();
     }
 
     public Restaurante buscar(Long id) {

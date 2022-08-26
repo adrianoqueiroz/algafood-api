@@ -10,7 +10,7 @@ create table pedido (
     usuario_cliente_id bigint not null,
     forma_pagamento_id bigint not null,
 
-    endereco_cidade_id bigint(20) not null,
+    endereco_cidade_id bigint not null,
     endereco_cep varchar(9) not null,
     endereco_logradouro varchar(100) not null,
     endereco_numero varchar(20) not null,
@@ -18,11 +18,11 @@ create table pedido (
     endereco_bairro varchar(60) not null,
 
     status varchar(10) not null,
-    createdAt datetime not null,
-    updatedAt datetime not null,
-    confirmedAt datetime null,
-    cancelledAt datetime null,
-    deliveredAt datetime null,
+    createdAt timestamp not null,
+    updatedAt timestamp not null,
+    confirmedAt timestamp null,
+    cancelledAt timestamp null,
+    deliveredAt timestamp null,
 
     primary key (id),
 
@@ -36,7 +36,7 @@ CREATE SEQUENCE item_pedido_id_seq START 1;
 
 create table item_pedido (
     id bigint NOT NULL DEFAULT NEXTVAL('item_pedido_id_seq'),
-    quantidade smallint(6) not null,
+    quantidade smallint not null,
     preco_unitario decimal(10,2) not null,
     preco_total decimal(10,2) not null,
     observacao varchar(255) null,
@@ -44,7 +44,7 @@ create table item_pedido (
     produto_id bigint not null,
 
     primary key (id),
-    unique key uk_item_pedido_produto (pedido_id, produto_id),
+    unique (pedido_id, produto_id),
     constraint fk_item_pedido_pedido foreign key (pedido_id) references pedido (id),
     constraint fk_item_pedido_produto foreign key (produto_id) references produto (id)
 );
