@@ -2,23 +2,26 @@ package com.algaworks.algafood.api.model;
 
 import com.algaworks.algafood.domain.model.Restaurante;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class RestauranteModel {
-    private final Long id;
-    private final String nome;
-    private final BigDecimal taxaFrete;
-    private final CozinhaModel cozinha;
+    private Long id;
+    private String nome;
+    private BigDecimal taxaFrete;
+    private CozinhaModel cozinha;
+    private Boolean active;
+    private EnderecoModel endereco;
 
-    private final Boolean active;
+    private static final ModelMapper modelMapper = new ModelMapper();
 
     public RestauranteModel(Restaurante restaurante) {
-        this.id = restaurante.getId();
-        this.nome = restaurante.getNome();
-        this.taxaFrete = restaurante.getTaxaFrete();
-        this.cozinha = new CozinhaModel(restaurante.getCozinha());
-        this.active = restaurante.getActive();
+        modelMapper.map(restaurante, this);
     }
 }
