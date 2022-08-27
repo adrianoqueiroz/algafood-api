@@ -6,6 +6,8 @@ delete from cidade;
 delete from estado;
 delete from cozinha;
 delete from permissao;
+delete from grupo;
+delete from usuario;
 
 ALTER SEQUENCE produto_id_seq RESTART WITH 1;
 ALTER SEQUENCE restaurante_id_seq RESTART WITH 1;
@@ -15,6 +17,7 @@ ALTER SEQUENCE cozinha_id_seq RESTART WITH 6;
 ALTER SEQUENCE permissao_id_seq RESTART WITH 3;
 ALTER SEQUENCE forma_pagamento_id_seq RESTART WITH 1;
 ALTER SEQUENCE grupo_id_seq RESTART WITH 1;
+ALTER SEQUENCE usuario_id_seq RESTART WITH 1;
 
 insert into cozinha (id, nome) values (1, 'Tailandesa');
 insert into cozinha (id, nome) values (2, 'Indiana');
@@ -58,3 +61,9 @@ insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Pe
 insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
 
 insert into grupo (id, nome) values (nextval('grupo_id_seq'), 'Gerente'), (nextval('grupo_id_seq'), 'Vendedor'), (nextval('grupo_id_seq'), 'Secretária'), (nextval('grupo_id_seq'), 'Cadastrador');
+
+insert into usuario (id, nome, email, senha, created_at, updated_at) values
+    (nextval('usuario_id_seq'), 'João da Silva', 'joao.ger@algafood.com', '123', current_timestamp, current_timestamp),
+    (nextval('usuario_id_seq'), 'Maria Joaquina', 'maria.vnd@algafood.com', '123', current_timestamp, current_timestamp),
+    (nextval('usuario_id_seq'), 'José Souza', 'jose.aux@algafood.com', '123', current_timestamp, current_timestamp),
+    (nextval('usuario_id_seq'), 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', current_timestamp, current_timestamp);
