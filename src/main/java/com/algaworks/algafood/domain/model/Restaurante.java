@@ -27,8 +27,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Builder
 @NoArgsConstructor
@@ -76,11 +79,11 @@ public class Restaurante {
       joinColumns = @JoinColumn(name = "restaurante_id"),
       inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
   @ToString.Exclude
-  private List<FormaPagamento> formasPagamento;
+  private Set<FormaPagamento> formasPagamento = new HashSet<>();
 
   @OneToMany(mappedBy = "restaurante")
   @ToString.Exclude
-  private List<Produto> produtos;
+  private List<Produto> produtos = new ArrayList<>();
 
     public void ativar() {
         setActive(true);
@@ -101,5 +104,13 @@ public class Restaurante {
   @Override
   public int hashCode() {
     return getClass().hashCode();
+  }
+
+    public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
+      return getFormasPagamento().remove(formaPagamento);
+    }
+
+  public boolean adicionarFormaPagamento(FormaPagamento formaPagamento) {
+    return getFormasPagamento().add(formaPagamento);
   }
 }

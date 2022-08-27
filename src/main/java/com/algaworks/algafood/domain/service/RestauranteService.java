@@ -4,6 +4,7 @@ import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class RestauranteService {
 
     private final CozinhaService cozinhaService;
     private final CidadeService cidadeService;
+
+    private final FormaPagamentoService formaPagamentoService;
 
     @Transactional
     public Restaurante salvar(Restaurante restaurante) {
@@ -66,6 +69,24 @@ public class RestauranteService {
         return restauranteRepository.findById(id).orElseThrow(
             () -> new RestauranteNaoEncontradoException(id)
         );
+    }
+
+    @Transactional
+    public boolean desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscar(restauranteId);
+
+        FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
+
+        return restaurante.removerFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public boolean associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscar(restauranteId);
+
+        FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
+
+        return restaurante.adicionarFormaPagamento(formaPagamento);
     }
 
     public List<Restaurante> listar() {
