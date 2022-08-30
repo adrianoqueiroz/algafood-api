@@ -35,6 +35,12 @@ public class RestauranteInput {
     @NotNull
     private EnderecoInput endereco;
 
+    @NotNull
+    private boolean active;
+
+    @NotNull
+    private boolean aberto;
+
     public RestauranteInput(Restaurante restauranteAtual) {
         modelMapper.map(restauranteAtual, this);
     }

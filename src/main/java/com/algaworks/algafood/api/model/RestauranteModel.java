@@ -18,6 +18,7 @@ public class RestauranteModel {
     private CozinhaModel cozinha;
     private Boolean active;
     private EnderecoModel endereco;
+    private Boolean aberto;
 
     private static final ModelMapper modelMapper = new ModelMapper();
 

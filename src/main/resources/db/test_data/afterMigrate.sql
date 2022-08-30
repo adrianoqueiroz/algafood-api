@@ -8,6 +8,8 @@ delete from cozinha;
 delete from permissao;
 delete from grupo;
 delete from usuario;
+delete from grupo_has_permissao;
+delete from usuario_has_grupo;
 
 ALTER SEQUENCE produto_id_seq RESTART WITH 1;
 ALTER SEQUENCE restaurante_id_seq RESTART WITH 1;
@@ -34,12 +36,12 @@ insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 2);
 insert into cidade (id, nome, estado_id) values (4, 'Campinas', 2);
 insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 3);
 
-insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro, active) values (nextval('restaurante_id_seq'), 'Thai Gourmet', 10, 1, current_timestamp, current_timestamp, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro', true);
-insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active) values (nextval('restaurante_id_seq'), 'Thai Delivery', 9.50, 1, current_timestamp, current_timestamp, true);
-insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active) values (nextval('restaurante_id_seq'), 'Tuk Tuk Comida Indiana', 15, 2, current_timestamp, current_timestamp, true);
-insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active) values (nextval('restaurante_id_seq'), 'Java Steakhouse', 12, 3, current_timestamp, current_timestamp, true);
-insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active) values (nextval('restaurante_id_seq'), 'Lanchonete do Tio Sam', 11, 4, current_timestamp, current_timestamp, true);
-insert into restaurante (id, nome, taxa_frete, cozinha_id,  created_at, updated_at, active) values (nextval('restaurante_id_seq'), 'Bar da Maria', 6, 4, current_timestamp, current_timestamp, true);
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro, active, aberto) values (nextval('restaurante_id_seq'), 'Thai Gourmet', 10, 1, current_timestamp, current_timestamp, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro', true, true);
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active, aberto) values (nextval('restaurante_id_seq'), 'Thai Delivery', 9.50, 1, current_timestamp, current_timestamp, true, true);
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active, aberto) values (nextval('restaurante_id_seq'), 'Tuk Tuk Comida Indiana', 15, 2, current_timestamp, current_timestamp, true, true);
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active, aberto) values (nextval('restaurante_id_seq'), 'Java Steakhouse', 12, 3, current_timestamp, current_timestamp, true, true);
+insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active, aberto) values (nextval('restaurante_id_seq'), 'Lanchonete do Tio Sam', 11, 4, current_timestamp, current_timestamp, true, true);
+insert into restaurante (id, nome, taxa_frete, cozinha_id,  created_at, updated_at, active, aberto) values (nextval('restaurante_id_seq'), 'Bar da Maria', 6, 4, current_timestamp, current_timestamp, true, true);
 
 insert into forma_pagamento (id, descricao) values (nextval('forma_pagamento_id_seq'), 'Cartão de crédito');
 insert into forma_pagamento (id, descricao) values (nextval('forma_pagamento_id_seq'), 'Cartão de débito');
@@ -62,8 +64,12 @@ insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permi
 
 insert into grupo (id, nome) values (nextval('grupo_id_seq'), 'Gerente'), (nextval('grupo_id_seq'), 'Vendedor'), (nextval('grupo_id_seq'), 'Secretária'), (nextval('grupo_id_seq'), 'Cadastrador');
 
+insert into grupo_has_permissao (grupo_id, permissao_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
+
 insert into usuario (id, nome, email, senha, created_at, updated_at) values
     (nextval('usuario_id_seq'), 'João da Silva', 'joao.ger@algafood.com', '123', current_timestamp, current_timestamp),
     (nextval('usuario_id_seq'), 'Maria Joaquina', 'maria.vnd@algafood.com', '123', current_timestamp, current_timestamp),
     (nextval('usuario_id_seq'), 'José Souza', 'jose.aux@algafood.com', '123', current_timestamp, current_timestamp),
     (nextval('usuario_id_seq'), 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', current_timestamp, current_timestamp);
+
+insert into usuario_grupo (usuario_id, grupo_id) values (1, 1), (1, 2), (2, 2);

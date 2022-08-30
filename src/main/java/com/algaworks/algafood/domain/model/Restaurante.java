@@ -85,7 +85,17 @@ public class Restaurante {
   @ToString.Exclude
   private List<Produto> produtos = new ArrayList<>();
 
-    public void ativar() {
+  private Boolean aberto = Boolean.FALSE;
+
+  public void abrir() {
+    setAberto(true);
+  }
+
+  public void fechar() {
+    setAberto(false);
+  }
+
+  public void ativar() {
         setActive(true);
     }
 

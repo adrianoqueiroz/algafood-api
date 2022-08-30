@@ -12,7 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -31,5 +33,13 @@ public class Grupo {
     @JoinTable(name = "grupo_has_permissao",
             joinColumns = @JoinColumn(name = "grupo_id"),
             inverseJoinColumns = @JoinColumn(name = "permissao_id"))
-    private List<Permissao> permissoes;
+    private Set<Permissao> permissoes = new HashSet<>();
+
+    public boolean removerPermissao(Permissao permissao) {
+        return getPermissoes().remove(permissao);
+    }
+
+    public boolean adicionarPermissao(Permissao permissao) {
+        return getPermissoes().add(permissao);
+    }
 }

@@ -89,6 +89,20 @@ public class RestauranteService {
         return restaurante.adicionarFormaPagamento(formaPagamento);
     }
 
+    @Transactional
+    public void abrir(Long restauranteId) {
+        Restaurante restauranteAtual = buscar(restauranteId);
+
+        restauranteAtual.abrir();
+    }
+
+    @Transactional
+    public void fechar(Long restauranteId) {
+        Restaurante restauranteAtual = buscar(restauranteId);
+
+        restauranteAtual.fechar();
+    }
+
     public List<Restaurante> listar() {
         return restauranteRepository.findAll();
     }
