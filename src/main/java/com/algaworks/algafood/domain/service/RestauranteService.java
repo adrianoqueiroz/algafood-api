@@ -6,6 +6,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,8 +26,25 @@ public class RestauranteService {
 
     private final CozinhaService cozinhaService;
     private final CidadeService cidadeService;
+    private final UsuarioService cadastroUsuario;
 
     private final FormaPagamentoService formaPagamentoService;
+
+    @Transactional
+    public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscar(restauranteId);
+        Usuario usuario = cadastroUsuario.buscar(usuarioId);
+
+        restaurante.removerResponsavel(usuario);
+    }
+
+    @Transactional
+    public void associarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscar(restauranteId);
+        Usuario usuario = cadastroUsuario.buscar(usuarioId);
+
+        restaurante.adicionarResponsavel(usuario);
+    }
 
     @Transactional
     public Restaurante salvar(Restaurante restaurante) {
@@ -60,9 +78,19 @@ public class RestauranteService {
     }
 
     @Transactional
+    public void ativar(List<Long> restauranteIds) {
+        restauranteIds.forEach(this::ativar);
+    }
+
+    @Transactional
     public void inativar(Long restauranteId) {
         Restaurante restaurante = buscar(restauranteId);
         restaurante.inativar();
+    }
+
+    @Transactional
+    public void inativar(List<Long> restauranteIds) {
+        restauranteIds.forEach(this::inativar);
     }
 
     public Restaurante buscar(Long id) {

@@ -81,6 +81,12 @@ public class Restaurante {
   @ToString.Exclude
   private Set<FormaPagamento> formasPagamento = new HashSet<>();
 
+  @ManyToMany
+  @JoinTable(name = "restaurante_usuario_responsavel",
+      joinColumns = @JoinColumn(name = "restaurante_id"),
+      inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+  private Set<Usuario> responsaveis = new HashSet<>();
+
   @OneToMany(mappedBy = "restaurante")
   @ToString.Exclude
   private List<Produto> produtos = new ArrayList<>();
@@ -93,6 +99,14 @@ public class Restaurante {
 
   public void fechar() {
     setAberto(false);
+  }
+
+  public boolean removerResponsavel(Usuario usuario) {
+    return getResponsaveis().remove(usuario);
+  }
+
+  public boolean adicionarResponsavel(Usuario usuario) {
+    return getResponsaveis().add(usuario);
   }
 
   public void ativar() {
