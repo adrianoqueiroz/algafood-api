@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 @Service
-public class CadastroProdutoService {
+public class ProdutoService {
 
     @Autowired
     private ProdutoRepository produtoRepository;

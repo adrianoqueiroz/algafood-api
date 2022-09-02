@@ -1,10 +1,15 @@
 package com.algaworks.algafood.domain.model;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -19,12 +24,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 public class Pedido {
 
@@ -56,6 +65,7 @@ public class Pedido {
 
   @ManyToOne(fetch = LAZY)
   @JoinColumn(nullable = false)
+  @ToString.Exclude
   private FormaPagamento formaPagamento;
 
   @ManyToOne
@@ -66,12 +76,14 @@ public class Pedido {
   @JoinColumn(name = "usuario_cliente_id", nullable = false)
   private Usuario cliente;
 
-  @OneToMany(mappedBy = "pedido")
-  private List<ItemPedido> itens;
+  @OneToMany(mappedBy = "pedido", cascade = CascadeType.MERGE)
+  private List<ItemPedido> itens = new ArrayList<>();
 
   public void calcularValorTotal() {
+    getItens().forEach(ItemPedido::calcularPrecoTotal);
+
     this.subtotal = getItens().stream()
-        .map(item -> item.getPrecoTotal())
+        .map(ItemPedido::getPrecoTotal)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     this.valorTotal = this.subtotal.add(this.taxaFrete);
@@ -83,5 +95,18 @@ public class Pedido {
 
   public void atribuirPedidoAosItens() {
     getItens().forEach(item -> item.setPedido(this));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+    Pedido pedido = (Pedido) o;
+    return id != null && Objects.equals(id, pedido.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
   }
 }

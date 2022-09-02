@@ -5,7 +5,7 @@ import com.algaworks.algafood.api.model.input.ProdutoInput;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
-import com.algaworks.algafood.domain.service.CadastroProdutoService;
+import com.algaworks.algafood.domain.service.ProdutoService;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class RestauranteProdutoController {
     private ProdutoRepository produtoRepository;
 
     @Autowired
-    private CadastroProdutoService cadastroProduto;
+    private ProdutoService cadastroProduto;
 
     @Autowired
     private RestauranteService restauranteService;
