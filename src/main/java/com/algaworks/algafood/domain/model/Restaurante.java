@@ -117,6 +117,14 @@ public class Restaurante {
         setActive(false);
     }
 
+  public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
+    return getFormasPagamento().contains(formaPagamento);
+  }
+
+  public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento) {
+    return !aceitaFormaPagamento(formaPagamento);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
