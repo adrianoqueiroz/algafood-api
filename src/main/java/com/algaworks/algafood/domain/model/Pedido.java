@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.model;
 
+import com.algaworks.algafood.domain.exception.NegocioException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -37,76 +40,107 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 public class Pedido {
 
-  @Id
-  @EqualsAndHashCode.Include
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pedido_id_generator")
-  @SequenceGenerator(name = "pedido_id_generator", sequenceName = "pedido_id_seq", allocationSize = 1)
-  private Long id;
+    @Id
+    @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pedido_id_generator")
+    @SequenceGenerator(name = "pedido_id_generator", sequenceName = "pedido_id_seq", allocationSize = 1)
+    private Long id;
+    private UUID codigo;
+    private BigDecimal subtotal;
+    private BigDecimal taxaFrete;
+    private BigDecimal valorTotal;
 
-  private BigDecimal subtotal;
-  private BigDecimal taxaFrete;
-  private BigDecimal valorTotal;
+    @Embedded
+    private Endereco enderecoEntrega;
 
-  @Embedded
-  private Endereco enderecoEntrega;
+    @Enumerated(EnumType.STRING)
+    private StatusPedido status = StatusPedido.CRIADO;
 
-  @Enumerated(EnumType.STRING)
-  private StatusPedido status = StatusPedido.CRIADO;
+    @CreationTimestamp
+    @Column(nullable = false, columnDefinition = "timestamp")
+    private OffsetDateTime createdAt;
 
-  @CreationTimestamp
-  @Column(nullable = false, columnDefinition = "timestamp")
-  private OffsetDateTime createdAt;
+    @UpdateTimestamp
+    private OffsetDateTime updatedAt;
+    private OffsetDateTime confirmedAt;
+    private OffsetDateTime cancelledAt;
+    private OffsetDateTime deliveredAt;
 
-  @UpdateTimestamp
-  private OffsetDateTime updatedAt;
-  private OffsetDateTime confirmedAt;
-  private OffsetDateTime cancelledAt;
-  private OffsetDateTime deliveredAt;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(nullable = false)
+    @ToString.Exclude
+    private FormaPagamento formaPagamento;
 
-  @ManyToOne(fetch = LAZY)
-  @JoinColumn(nullable = false)
-  @ToString.Exclude
-  private FormaPagamento formaPagamento;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Restaurante restaurante;
 
-  @ManyToOne
-  @JoinColumn(nullable = false)
-  private Restaurante restaurante;
+    @ManyToOne
+    @JoinColumn(name = "usuario_cliente_id", nullable = false)
+    private Usuario cliente;
 
-  @ManyToOne
-  @JoinColumn(name = "usuario_cliente_id", nullable = false)
-  private Usuario cliente;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.MERGE)
+    private List<ItemPedido> itens = new ArrayList<>();
 
-  @OneToMany(mappedBy = "pedido", cascade = CascadeType.MERGE)
-  private List<ItemPedido> itens = new ArrayList<>();
+    public void calcularValorTotal() {
+        getItens().forEach(ItemPedido::calcularPrecoTotal);
 
-  public void calcularValorTotal() {
-    getItens().forEach(ItemPedido::calcularPrecoTotal);
+        this.subtotal = getItens().stream()
+            .map(ItemPedido::getPrecoTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    this.subtotal = getItens().stream()
-        .map(ItemPedido::getPrecoTotal)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.valorTotal = this.subtotal.add(this.taxaFrete);
+    }
 
-    this.valorTotal = this.subtotal.add(this.taxaFrete);
-  }
+    public void definirFrete() {
+        setTaxaFrete(getRestaurante().getTaxaFrete());
+    }
 
-  public void definirFrete() {
-    setTaxaFrete(getRestaurante().getTaxaFrete());
-  }
+    public void atribuirPedidoAosItens() {
+        getItens().forEach(item -> item.setPedido(this));
+    }
 
-  public void atribuirPedidoAosItens() {
-    getItens().forEach(item -> item.setPedido(this));
-  }
+    @PrePersist
+    private void gerarCodigo() {
+        setCodigo(UUID.randomUUID());
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-    Pedido pedido = (Pedido) o;
-    return id != null && Objects.equals(id, pedido.id);
-  }
+    public void confirmar() {
+        setStatus(StatusPedido.CONFIRMADO);
+        setConfirmedAt(OffsetDateTime.now());
+    }
 
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
+    public void entregar() {
+        setStatus(StatusPedido.ENTREGUE);
+        setDeliveredAt(OffsetDateTime.now());
+    }
+
+    public void cancelar() {
+        setStatus(StatusPedido.CANCELADO);
+        setCancelledAt(OffsetDateTime.now());
+    }
+
+    private void setStatus(StatusPedido novoStatus) {
+        if (getStatus().naoPodeAlterarPara(novoStatus)) {
+            throw new NegocioException(String.format("Status do pedido %s não pode ser alterado de %s para %s",
+                getCodigo(), getStatus().getDescricao(), novoStatus.getDescricao()));
+        }
+
+        this.status = novoStatus;
+    }
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Pedido pedido = (Pedido) o;
+        return id != null && Objects.equals(id, pedido.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

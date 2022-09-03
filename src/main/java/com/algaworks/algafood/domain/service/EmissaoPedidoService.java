@@ -9,35 +9,26 @@ import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class EmissaoPedidoService {
 
-    @Autowired
-    private PedidoRepository pedidoRepository;
+    private final PedidoRepository pedidoRepository;
+    private final RestauranteService restauranteService;
+    private final CidadeService cidadeService;
+    private final UsuarioService usuarioService;
+    private final ProdutoService produtoService;
+    private final FormaPagamentoService formaPagamentoService;
 
-    @Autowired
-    private RestauranteService restauranteService;
-
-    @Autowired
-    private CidadeService cidadeService;
-
-    @Autowired
-    private UsuarioService usuarioService;
-
-    @Autowired
-    private ProdutoService produtoService;
-
-    @Autowired
-    private FormaPagamentoService formaPagamentoService;
-
-    public Pedido buscarOuFalhar(Long pedidoId) {
-        return pedidoRepository.findById(pedidoId)
-            .orElseThrow(() -> new PedidoNaoEncontradoException(pedidoId));
+    public Pedido buscar(UUID codigo) {
+        return pedidoRepository.findByCodigo(codigo)
+            .orElseThrow(() -> new PedidoNaoEncontradoException(codigo));
     }
 
     @Transactional

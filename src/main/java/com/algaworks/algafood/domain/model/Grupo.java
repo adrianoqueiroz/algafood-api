@@ -13,7 +13,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
