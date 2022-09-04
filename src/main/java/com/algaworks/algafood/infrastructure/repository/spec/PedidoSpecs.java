@@ -29,7 +29,7 @@ public class PedidoSpecs {
         }
 
         if(filtro.getEndCreatedAt() != null) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filtro.getBeginCreatedAt()));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filtro.getEndCreatedAt()));
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
