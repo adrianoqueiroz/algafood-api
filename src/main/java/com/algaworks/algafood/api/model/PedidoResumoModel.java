@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@JsonFilter("pedidoFilter")
+//@JsonFilter("pedidoFilter")
 public class PedidoResumoModel {
 
     private UUID codigo;

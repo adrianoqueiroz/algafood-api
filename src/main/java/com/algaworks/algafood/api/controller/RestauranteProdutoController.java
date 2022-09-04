@@ -7,6 +7,7 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
 import com.algaworks.algafood.domain.service.ProdutoService;
 import com.algaworks.algafood.domain.service.RestauranteService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,17 +26,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/restaurantes/{restauranteId}/produtos")
 public class RestauranteProdutoController {
 
-    @Autowired
-    private ProdutoRepository produtoRepository;
-
-    @Autowired
-    private ProdutoService cadastroProduto;
-
-    @Autowired
-    private RestauranteService restauranteService;
+    private final ProdutoRepository produtoRepository;
+    private final ProdutoService cadastroProduto;
+    private final RestauranteService restauranteService;
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
@@ -92,7 +89,7 @@ public class RestauranteProdutoController {
 
     public List<ProdutoModel> toCollectionModel(List<Produto> produtos) {
         return produtos.stream()
-            .map(produto -> toModel(produto))
+            .map(this::toModel)
             .collect(Collectors.toList());
     }
     public Produto toDomainObject(ProdutoInput produtoInput) {
