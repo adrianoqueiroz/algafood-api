@@ -13,8 +13,10 @@ public class PedidoSpecs {
     return (root, query, criteriaBuilder) -> {
         var predicates = new ArrayList<Predicate>();
 
-        root.fetch("restaurante").fetch("cozinha");
-        root.fetch("cliente");
+        if (Pedido.class.equals(query.getResultType())) {
+            root.fetch("restaurante").fetch("cozinha");
+            root.fetch("cliente");
+        }
 
         if(filtro.getClienteId() != null) {
             predicates.add(criteriaBuilder.equal(root.get("cliente"), filtro.getClienteId()));
