@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.input.PedidoInput;
+import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
@@ -11,13 +12,12 @@ import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
+import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +44,8 @@ public class PedidoController {
 
     @GetMapping
     public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro, Pageable pageable) {
+        pageable = traduzirPageable(pageable);
+
         Page<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 
         List<PedidoResumoModel>  pedidoResumoModelList = resumoToCollectionModel(todosPedidos.getContent());
@@ -94,6 +96,17 @@ public class PedidoController {
         return pedidos.stream()
             .map(this::resumoToModel)
             .collect(Collectors.toList());
+    }
+
+    private Pageable traduzirPageable(Pageable apiPageable) {
+        var mapeamento = ImmutableMap.of(
+            "codigo", "codigo",
+            "restaurante.nome", "restaurante.nome",
+            "nomeCliente", "cliente.nome",
+            "valorTotal", "valorTotal"
+        );
+
+        return PageableTranslator.translate(apiPageable, mapeamento);
     }
 
     public Pedido toDomainObject(PedidoInput pedidoInput) {
