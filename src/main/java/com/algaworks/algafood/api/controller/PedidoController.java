@@ -6,10 +6,10 @@ import com.algaworks.algafood.api.model.input.PedidoInput;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
-import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 import com.google.common.collect.ImmutableMap;
@@ -43,7 +43,7 @@ public class PedidoController {
     private static final ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping
-    public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro, Pageable pageable) {
+    public Page<PedidoResumoModel> pesquisar(VendaDiariaFilter.PedidoFilter filtro, Pageable pageable) {
         pageable = traduzirPageable(pageable);
 
         Page<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
