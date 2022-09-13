@@ -12,8 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VendaDiaria {
-
-    private String createdAt;
+    //    private String createdAt;
     private Long totalVendas;
-    private BigDecimal valorTotal;
+    private BigDecimal totalFaturado;
 }
