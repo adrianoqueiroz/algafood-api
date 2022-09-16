@@ -2,9 +2,12 @@ package com.algaworks.algafood.infrastructure.service.storage;
 
 import com.algaworks.algafood.domain.service.FotoStorageService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Service
 public class LocalFotoStorageService implements FotoStorageService {
     @Value("${algafood.storage.local.diretorio-fotos}")
     private Path diretorioFotos;
@@ -14,6 +17,9 @@ public class LocalFotoStorageService implements FotoStorageService {
 
         try {
         Path arquivoPath = getArquivoPath(novaFoto.getNomeArquivo());
+
+        Files.createDirectories(arquivoPath.getParent());
+        Files.copy(novaFoto.getInputStream(), arquivoPath);
 
         } catch (Exception e) {
             throw new StorageException("Não foi possível armazenar arquivo.", e);
