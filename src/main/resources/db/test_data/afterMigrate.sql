@@ -4,6 +4,7 @@ delete from restaurante_usuario_responsavel;
 delete from item_pedido;
 
 delete from pedido;
+delete from foto_produto;
 delete from produto;
 delete from restaurante_has_forma_pagamento;
 delete from restaurante;
