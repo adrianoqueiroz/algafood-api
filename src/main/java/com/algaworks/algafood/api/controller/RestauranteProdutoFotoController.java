@@ -9,6 +9,7 @@ import com.algaworks.algafood.domain.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,14 @@ public class RestauranteProdutoFotoController {
     private final CatalogoFotoProdutoService catalogoFotoProdutoService;
     private final ProdutoService produtoService;
     private static final ModelMapper modelMapper = new ModelMapper();
+
+    @GetMapping
+    public FotoProdutoModel buscar(@PathVariable Long restauranteId,
+                                   @PathVariable Long produtoId) {
+        FotoProduto fotoProduto = catalogoFotoProdutoService.buscar(restauranteId, produtoId);
+
+        return toModel(fotoProduto);
+    }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public FotoProdutoModel atualizarFoto(@PathVariable Long restauranteId,
