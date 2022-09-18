@@ -8,21 +8,27 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Path;
 
-@Service
 @RequiredArgsConstructor
 public class S3FotoStorageService implements FotoStorageService {
 
-    private final AmazonS3 amazonS3;
+    @Autowired
+    private AmazonS3 amazonS3;
     private final StorageProperties storageProperties;
 
     @Override
-    public InputStream recuperar(String nomeArquivo) {
-        return null;
+    public FotoRecuperada recuperar(String nomeArquivo) {
+        String pathArquivo = getPathArquivo(nomeArquivo);
+
+        URL url = amazonS3.getUrl(storageProperties.getS3().getBucket(), pathArquivo);
+
+        return FotoRecuperada.builder()
+            .url(url.toString())
+            .build();
     }
 
     @Override

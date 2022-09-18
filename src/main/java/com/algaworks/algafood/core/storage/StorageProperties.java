@@ -16,6 +16,7 @@ public class StorageProperties {
 
     private S3 s3 = new S3();
     private Local local = new Local();
+    private  TipoStorage tipo = TipoStorage.LOCAL;
 
     @Getter
     @Setter
@@ -31,6 +32,10 @@ public class StorageProperties {
         private String bucket;
         private Regions region;
         private String diretorioFotos;
+    }
+
+    public enum TipoStorage {
+        S3, LOCAL
     }
 
 }
