@@ -25,7 +25,6 @@ public class FluxoPedidoService {
             .variavel("pedido", pedido)
             .destinatario(pedido.getCliente().getEmail())
             .build();
-
         envioEmailService.enviar(mensagem);
     }
 
