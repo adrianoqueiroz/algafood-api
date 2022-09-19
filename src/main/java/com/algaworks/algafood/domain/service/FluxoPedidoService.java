@@ -12,11 +12,21 @@ import java.util.UUID;
 public class FluxoPedidoService {
 
     private final EmissaoPedidoService emissaoPedidoService;
+    private final EnvioEmailService envioEmailService;
 
     @Transactional
     public void confirmar(UUID codigoPedido) {
         Pedido pedido = emissaoPedidoService.buscar(codigoPedido);
         pedido.confirmar();
+
+        var mensagem = EnvioEmailService.Mensagem.builder()
+            .assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado")
+            .corpo("pedido-confirmado.html")
+            .variavel("pedido", pedido)
+            .destinatario(pedido.getCliente().getEmail())
+            .build();
+
+        envioEmailService.enviar(mensagem);
     }
 
     @Transactional

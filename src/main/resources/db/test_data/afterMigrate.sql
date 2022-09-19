@@ -4,6 +4,7 @@ delete from restaurante_usuario_responsavel;
 delete from item_pedido;
 
 delete from pedido;
+delete from usuario;
 delete from foto_produto;
 delete from produto;
 delete from restaurante_has_forma_pagamento;
@@ -14,7 +15,6 @@ delete from estado;
 delete from cozinha;
 delete from permissao;
 delete from grupo;
-delete from usuario;
 
 ALTER SEQUENCE produto_id_seq RESTART WITH 1;
 ALTER SEQUENCE restaurante_id_seq RESTART WITH 1;
@@ -72,15 +72,13 @@ insert into grupo (id, nome) values (nextval('grupo_id_seq'), 'Gerente'), (nextv
 insert into grupo_has_permissao (grupo_id, permissao_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
 
 insert into usuario (id, nome, email, senha, created_at, updated_at) values
+    (nextval('usuario_id_seq'), 'Adriano Queiroz', 'adriano.nq+algafood@gmail.com', '123', current_timestamp, current_timestamp),
     (nextval('usuario_id_seq'), 'João da Silva', 'joao.ger@algafood.com', '123', current_timestamp, current_timestamp),
     (nextval('usuario_id_seq'), 'Maria Joaquina', 'maria.vnd@algafood.com', '123', current_timestamp, current_timestamp),
     (nextval('usuario_id_seq'), 'José Souza', 'jose.aux@algafood.com', '123', current_timestamp, current_timestamp),
     (nextval('usuario_id_seq'), 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', current_timestamp, current_timestamp);
 
 insert into usuario_grupo (usuario_id, grupo_id) values (1, 1), (1, 2), (2, 2);
-
-insert into usuario (id, nome, email, senha, created_at, updated_at) values
-    (5, 'Manoel Lima', 'manoel.loja@gmail.com', '123', current_timestamp, current_timestamp);
 
 insert into restaurante_usuario_responsavel (restaurante_id, usuario_id) values (1, 5), (3, 5);
 
