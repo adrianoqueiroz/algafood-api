@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
+import com.algaworks.algafood.domain.event.PedidoCanceladoEvent;
+import com.algaworks.algafood.domain.event.PedidoConfirmadoEvent;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,7 +41,7 @@ import static javax.persistence.FetchType.LAZY;
 @ToString
 @RequiredArgsConstructor
 @Entity
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido> {
 
     @Id
     @EqualsAndHashCode.Include
@@ -80,6 +83,7 @@ public class Pedido {
     private Usuario cliente;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.MERGE)
+    @ToString.Exclude
     private List<ItemPedido> itens = new ArrayList<>();
 
     public void calcularValorTotal() {
@@ -108,6 +112,8 @@ public class Pedido {
     public void confirmar() {
         setStatus(StatusPedido.CONFIRMADO);
         setConfirmedAt(OffsetDateTime.now());
+
+        registerEvent(new PedidoConfirmadoEvent(this));
     }
 
     public void entregar() {
@@ -118,6 +124,8 @@ public class Pedido {
     public void cancelar() {
         setStatus(StatusPedido.CANCELADO);
         setCancelledAt(OffsetDateTime.now());
+
+        registerEvent(new PedidoCanceladoEvent(this));
     }
 
     private void setStatus(StatusPedido novoStatus) {

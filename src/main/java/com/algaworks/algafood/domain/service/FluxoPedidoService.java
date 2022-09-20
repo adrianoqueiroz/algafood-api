@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import com.algaworks.algafood.domain.model.Pedido;
+import com.algaworks.algafood.domain.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,26 +13,22 @@ import java.util.UUID;
 public class FluxoPedidoService {
 
     private final EmissaoPedidoService emissaoPedidoService;
-    private final EnvioEmailService envioEmailService;
+    private final PedidoRepository pedidoRepository;
 
     @Transactional
     public void confirmar(UUID codigoPedido) {
         Pedido pedido = emissaoPedidoService.buscar(codigoPedido);
         pedido.confirmar();
 
-        var mensagem = EnvioEmailService.Mensagem.builder()
-            .assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado")
-            .corpo("pedido-confirmado.html")
-            .variavel("pedido", pedido)
-            .destinatario(pedido.getCliente().getEmail())
-            .build();
-        envioEmailService.enviar(mensagem);
+        pedidoRepository.save(pedido);
     }
 
     @Transactional
     public void cancelar(UUID pedidoId) {
         Pedido pedido = emissaoPedidoService.buscar(pedidoId);
         pedido.cancelar();
+
+        pedidoRepository.save(pedido);
     }
 
     @Transactional
