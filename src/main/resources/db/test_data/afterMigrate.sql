@@ -48,9 +48,9 @@ insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_a
 insert into restaurante (id, nome, taxa_frete, cozinha_id, created_at, updated_at, active, aberto) values (nextval('restaurante_id_seq'), 'Lanchonete do Tio Sam', 11, 4, current_timestamp, current_timestamp, true, true);
 insert into restaurante (id, nome, taxa_frete, cozinha_id,  created_at, updated_at, active, aberto) values (nextval('restaurante_id_seq'), 'Bar da Maria', 6, 4, current_timestamp, current_timestamp, true, true);
 
-insert into forma_pagamento (id, descricao) values (nextval('forma_pagamento_id_seq'), 'Cartão de crédito');
-insert into forma_pagamento (id, descricao) values (nextval('forma_pagamento_id_seq'), 'Cartão de débito');
-insert into forma_pagamento (id, descricao) values (nextval('forma_pagamento_id_seq'), 'Dinheiro');
+insert into forma_pagamento (id, descricao, updated_at) values (nextval('forma_pagamento_id_seq'), 'Cartão de crédito', current_timestamp);
+insert into forma_pagamento (id, descricao, updated_at) values (nextval('forma_pagamento_id_seq'), 'Cartão de débito', current_timestamp);
+insert into forma_pagamento (id, descricao, updated_at) values (nextval('forma_pagamento_id_seq'), 'Dinheiro', current_timestamp);
 
 insert into restaurante_has_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 
