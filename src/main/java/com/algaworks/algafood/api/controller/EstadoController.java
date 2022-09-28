@@ -1,9 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.EstadoModelAssembler;
+import com.algaworks.algafood.api.model.EstadoModel;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.EstadoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,43 +18,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/estados")
 public class EstadoController {
 
-  @Autowired
-  private EstadoService estadoService;
+    private final EstadoService estadoService;
+    private final EstadoModelAssembler estadoModelAssembler;
 
+    @GetMapping("/{id}")
+    public EstadoModel buscar(@PathVariable Long id) {
+        return estadoModelAssembler.toModel(estadoService.buscar(id));
+    }
 
+    @GetMapping
+    public CollectionModel<EstadoModel> listar() {
+        return estadoModelAssembler.toCollectionModel(estadoService.listar());
+    }
 
-  @GetMapping("/{id}")
-  public Estado buscar(@PathVariable Long id) {
-    return estadoService.buscar(id);
-  }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public EstadoModel adicionar(@RequestBody Estado estado) {
+        return estadoModelAssembler.toModel(estadoService.salvar(estado));
+    }
 
-  @GetMapping
-  public List<Estado> listar() {
-    return estadoService.listar();
-  }
+    @DeleteMapping("/{id}")
+    public void remover(@PathVariable Long id) {
+        estadoService.remover(id);
+    }
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public Estado adicionar(@RequestBody Estado estado) {
-    return estadoService.salvar(estado);
-  }
+    @PutMapping("/{id}")
+    public EstadoModel atualizar(@PathVariable Long id, @RequestBody Estado estado) {
+        Estado estadoAtual = estadoService.buscar(id);
 
-  @DeleteMapping("/{id}")
-  public void remover(@PathVariable Long id) {
-      estadoService.remover(id);
-  }
-
-  @PutMapping("/{id}")
-  public Estado atualizar(@PathVariable Long id, @RequestBody Estado estado) {
-    Estado estadoAtual = estadoService.buscar(id);
-
-    BeanUtils.copyProperties(estado, estadoAtual, "id");
-    return estadoService.salvar(estadoAtual);
-  }
+        BeanUtils.copyProperties(estado, estadoAtual, "id");
+        return estadoModelAssembler.toModel(estadoService.salvar(estadoAtual));
+    }
 }

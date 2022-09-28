@@ -1,6 +1,5 @@
 package com.algaworks.algafood.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,12 +37,10 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
-    @JsonIgnore
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "timestamp")
     private OffsetDateTime createdAt;
 
-    @JsonIgnore
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "timestamp")
     private OffsetDateTime updatedAt;

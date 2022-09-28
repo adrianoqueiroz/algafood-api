@@ -1,5 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.PedidoModelAssembler;
+import com.algaworks.algafood.api.assembler.PedidoResumoModelAssembler;
 import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.input.PedidoInput;
@@ -16,8 +18,9 @@ import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,25 +42,26 @@ public class PedidoController {
 
     private final PedidoRepository pedidoRepository;
     private final EmissaoPedidoService emissaoPedido;
+    private final PedidoModelAssembler pedidoModelAssembler;
+    private final PedidoResumoModelAssembler pedidoResumoModelAssembler;
+    private final PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping
-    public Page<PedidoResumoModel> pesquisar(VendaDiariaFilter.PedidoFilter filtro, Pageable pageable) {
+    public PagedModel<PedidoResumoModel> pesquisar(VendaDiariaFilter.PedidoFilter filtro, Pageable pageable) {
         pageable = traduzirPageable(pageable);
 
-        Page<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
+        Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 
-        List<PedidoResumoModel>  pedidoResumoModelList = resumoToCollectionModel(todosPedidos.getContent());
-
-        return new PageImpl<>(pedidoResumoModelList, pageable, todosPedidos.getTotalElements());
+        return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
     }
 
     @GetMapping("/{codigoPedido}")
     public PedidoModel buscar(@PathVariable UUID codigoPedido) {
         Pedido pedido = emissaoPedido.buscar(codigoPedido);
 
-        return toModel(pedido);
+        return pedidoModelAssembler.toModel(pedido);
     }
 
     @PostMapping
@@ -72,20 +76,10 @@ public class PedidoController {
 
             novoPedido = emissaoPedido.emitir(novoPedido);
 
-            return toModel(novoPedido);
+            return pedidoModelAssembler.toModel(novoPedido);
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
-    }
-
-    public PedidoModel toModel(Pedido pedido) {
-        return modelMapper.map(pedido, PedidoModel.class);
-    }
-
-    public List<PedidoModel> toCollectionModel(List<Pedido> pedidos) {
-        return pedidos.stream()
-            .map(this::toModel)
-            .collect(Collectors.toList());
     }
 
     public PedidoResumoModel resumoToModel(Pedido pedido) {

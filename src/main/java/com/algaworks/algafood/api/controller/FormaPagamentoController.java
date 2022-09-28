@@ -1,12 +1,14 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.FormaPagamentoModelAssembler;
 import com.algaworks.algafood.api.model.FormaPagamentoModel;
 import com.algaworks.algafood.api.model.input.FormaPagamentoInput;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.repository.FormaPagamentoRepository;
 import com.algaworks.algafood.domain.service.FormaPagamentoService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,24 +28,20 @@ import javax.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/formas-pagamento")
 public class FormaPagamentoController {
 
-    @Autowired
-    private FormaPagamentoRepository formaPagamentoRepository;
-
-    @Autowired
-    private FormaPagamentoService formaPagamentoService;
+    private final FormaPagamentoRepository formaPagamentoRepository;
+    private final FormaPagamentoService formaPagamentoService;
+    private final FormaPagamentoModelAssembler formaPagamentoModelAssembler;
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
-
-
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoModel>> listar(ServletWebRequest request) {
+    public ResponseEntity<CollectionModel<FormaPagamentoModel>> listar(ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 
         OffsetDateTime dataUltimaAtualizacao = formaPagamentoRepository.getLastUpdatedAt();
@@ -59,10 +57,7 @@ public class FormaPagamentoController {
         return ResponseEntity.ok()
             .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
             .eTag(eTag)
-//            .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePrivate())
-//            .cacheControl(CacheControl.noCache())
-//            .cacheControl(CacheControl.noStore())
-            .body(toCollectionModel(todasFormasPagamentos));
+            .body(formaPagamentoModelAssembler.toCollectionModel(todasFormasPagamentos));
     }
 
     @GetMapping("/{formaPagamentoId}")
@@ -81,7 +76,7 @@ public class FormaPagamentoController {
 
         return ResponseEntity.ok()
             .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
-            .body(toModel(formaPagamento));
+            .body(formaPagamentoModelAssembler.toModel(formaPagamento));
     }
 
     @PostMapping
@@ -91,7 +86,7 @@ public class FormaPagamentoController {
 
         formaPagamento = formaPagamentoService.salvar(formaPagamento);
 
-        return toModel(formaPagamento);
+        return formaPagamentoModelAssembler.toModel(formaPagamento);
     }
 
     @PutMapping("/{formaPagamentoId}")
@@ -103,7 +98,7 @@ public class FormaPagamentoController {
 
         formaPagamentoAtual = formaPagamentoService.salvar(formaPagamentoAtual);
 
-        return toModel(formaPagamentoAtual);
+        return formaPagamentoModelAssembler.toModel(formaPagamentoAtual);
     }
 
     @DeleteMapping("/{formaPagamentoId}")
@@ -119,15 +114,5 @@ public class FormaPagamentoController {
 
     public void copyToDomainObject(FormaPagamentoInput formaPagamentoInput, FormaPagamento formaPagamento) {
         modelMapper.map(formaPagamentoInput, formaPagamento);
-    }
-
-    public FormaPagamentoModel toModel(FormaPagamento formaPagamento) {
-        return modelMapper.map(formaPagamento, FormaPagamentoModel.class);
-    }
-
-    public List<FormaPagamentoModel> toCollectionModel(List<FormaPagamento> formasPagamentos) {
-        return formasPagamentos.stream()
-            .map(formaPagamento -> toModel(formaPagamento))
-            .collect(Collectors.toList());
     }
 }
