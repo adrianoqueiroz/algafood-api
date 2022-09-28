@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.assembler.PedidoResumoModelAssembler;
 import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.input.PedidoInput;
+import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -50,9 +51,11 @@ public class PedidoController {
 
     @GetMapping
     public PagedModel<PedidoResumoModel> pesquisar(VendaDiariaFilter.PedidoFilter filtro, Pageable pageable) {
-        pageable = traduzirPageable(pageable);
+        Pageable pageableTraduzido = traduzirPageable(pageable);
 
-        Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
+        Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageableTraduzido );
+
+        pedidosPage = new PageWrapper<>(pedidosPage, pageable);
 
         return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
     }
@@ -82,19 +85,9 @@ public class PedidoController {
         }
     }
 
-    public PedidoResumoModel resumoToModel(Pedido pedido) {
-        return modelMapper.map(pedido, PedidoResumoModel.class);
-    }
-
-    public List<PedidoResumoModel> resumoToCollectionModel(List<Pedido> pedidos) {
-        return pedidos.stream()
-            .map(this::resumoToModel)
-            .collect(Collectors.toList());
-    }
-
     private Pageable traduzirPageable(Pageable apiPageable) {
         var mapeamento = ImmutableMap.of(
-            "codigo", "codigo",
+            "codigo ", "codigo",
             "restaurante.nome", "restaurante.nome",
             "nomeCliente", "cliente.nome",
             "valorTotal", "valorTotal"
@@ -105,9 +98,5 @@ public class PedidoController {
 
     public Pedido toDomainObject(PedidoInput pedidoInput) {
         return modelMapper.map(pedidoInput, Pedido.class);
-    }
-
-    public void copyToDomainObject(PedidoInput pedidoInput, Pedido pedido) {
-        modelMapper.map(pedidoInput, pedido);
     }
 }
