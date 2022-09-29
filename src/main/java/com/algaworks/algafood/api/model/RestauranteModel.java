@@ -7,13 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigDecimal;
 
+@Relation(collectionRelation = "restaurantes")
 @Getter
 @Setter
 @NoArgsConstructor
-public class RestauranteModel {
+public class RestauranteModel extends RepresentationModel<RestauranteModel> {
     @JsonView({RestauranteView.Resumo.class, RestauranteView.ApenasNome.class})
     private Long id;
     @JsonView({RestauranteView.Resumo.class, RestauranteView.ApenasNome.class})
