@@ -5,12 +5,11 @@ import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-@Relation(collectionRelation = "cidades")
+@Relation(collectionRelation = "restaurantes")
 @Setter
 @Getter
-public class  CidadeModel extends RepresentationModel<CidadeModel> {
+public class RestauranteApenasNomeModel extends RepresentationModel<RestauranteApenasNomeModel> {
 
     private Long id;
     private String nome;
-    private EstadoModel estado;
 }

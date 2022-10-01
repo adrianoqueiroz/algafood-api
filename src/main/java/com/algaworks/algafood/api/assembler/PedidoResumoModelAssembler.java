@@ -1,9 +1,11 @@
 package com.algaworks.algafood.api.assembler;
 
+import com.algaworks.algafood.api.LinksGenerator;
 import com.algaworks.algafood.api.controller.PedidoController;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,9 @@ public class PedidoResumoModelAssembler extends RepresentationModelAssemblerSupp
 
 	private static final ModelMapper modelMapper = new ModelMapper();
 
+	@Autowired
+	private LinksGenerator linksGenerator;
+
 	public PedidoResumoModelAssembler() {
 		super(PedidoController.class, PedidoResumoModel.class);
 	}
@@ -25,7 +30,7 @@ public class PedidoResumoModelAssembler extends RepresentationModelAssemblerSupp
 
 		modelMapper.map(pedido, pedidoResumoModel);
 
-		pedidoResumoModel.add(linkTo(PedidoController.class).withRel("pedidos"));
+		pedidoResumoModel.add(linksGenerator.linkToPedidos("pedidos"));
 
 		return pedidoResumoModel;
 	}

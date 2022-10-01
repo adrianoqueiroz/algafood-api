@@ -44,72 +44,72 @@ import java.util.Set;
     descricaoField = "nome", descricaoObrigatoria = "Frete Grátis")
 public class Restaurante {
 
-  @Id
-  @EqualsAndHashCode.Include
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "restaurante_id_generator")
-  @SequenceGenerator(name = "restaurante_id_generator", sequenceName = "restaurante_id_seq", allocationSize = 1)
-  private Long id;
+    @Id
+    @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "restaurante_id_generator")
+    @SequenceGenerator(name = "restaurante_id_generator", sequenceName = "restaurante_id_seq", allocationSize = 1)
+    private Long id;
 
-  @Column(nullable = false)
-  private String nome;
+    @Column(nullable = false)
+    private String nome;
 
-  @TaxaFrete
-  @Column(name = "taxa_frete", nullable = false)
-  private BigDecimal taxaFrete;
+    @TaxaFrete
+    @Column(name = "taxa_frete", nullable = false)
+    private BigDecimal taxaFrete;
 
-  @ManyToOne //(fetch = FetchType.LAZY)
-  @JoinColumn(name = "cozinha_id", nullable = false)
-  private Cozinha cozinha;
+    @ManyToOne //(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cozinha_id", nullable = false)
+    private Cozinha cozinha;
 
-  @Embedded
-  private Endereco endereco;
+    @Embedded
+    private Endereco endereco;
 
-  private Boolean active = Boolean.TRUE;
+    private Boolean active = Boolean.TRUE;
 
-  @CreationTimestamp
-  @Column(nullable = false, columnDefinition = "timestamp")
-  private OffsetDateTime createdAt;
+    @CreationTimestamp
+    @Column(nullable = false, columnDefinition = "timestamp")
+    private OffsetDateTime createdAt;
 
-  @UpdateTimestamp
-  @Column(nullable = false, columnDefinition = "timestamp")
-  private OffsetDateTime updatedAt;
+    @UpdateTimestamp
+    @Column(nullable = false, columnDefinition = "timestamp")
+    private OffsetDateTime updatedAt;
 
-  @ManyToMany
-  @JoinTable(name = "restaurante_has_forma_pagamento",
-      joinColumns = @JoinColumn(name = "restaurante_id"),
-      inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
-  @ToString.Exclude
-  private Set<FormaPagamento> formasPagamento = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "restaurante_has_forma_pagamento",
+        joinColumns = @JoinColumn(name = "restaurante_id"),
+        inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
+    @ToString.Exclude
+    private Set<FormaPagamento> formasPagamento = new HashSet<>();
 
-  @ManyToMany
-  @JoinTable(name = "restaurante_usuario_responsavel",
-      joinColumns = @JoinColumn(name = "restaurante_id"),
-      inverseJoinColumns = @JoinColumn(name = "usuario_id"))
-  private Set<Usuario> responsaveis = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "restaurante_usuario_responsavel",
+        joinColumns = @JoinColumn(name = "restaurante_id"),
+        inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+    private Set<Usuario> responsaveis = new HashSet<>();
 
-  @OneToMany(mappedBy = "restaurante")
-  @ToString.Exclude
-  private List<Produto> produtos = new ArrayList<>();
+    @OneToMany(mappedBy = "restaurante")
+    @ToString.Exclude
+    private List<Produto> produtos = new ArrayList<>();
 
-  private Boolean aberto = Boolean.FALSE;
+    private Boolean aberto = Boolean.FALSE;
 
-  public void abrir() {
-    setAberto(true);
-  }
+    public void abrir() {
+        setAberto(true);
+    }
 
-  public void fechar() {
-    setAberto(false);
-  }
+    public void fechar() {
+        setAberto(false);
+    }
 
-  public boolean removerResponsavel(Usuario usuario) {
-    return getResponsaveis().remove(usuario);
-  }
+    public boolean removerResponsavel(Usuario usuario) {
+        return getResponsaveis().remove(usuario);
+    }
 
-  public boolean adicionarResponsavel(Usuario usuario) {
-    return getResponsaveis().add(usuario);
-  }
+    public boolean adicionarResponsavel(Usuario usuario) {
+        return getResponsaveis().add(usuario);
+    }
 
-  public void ativar() {
+    public void ativar() {
         setActive(true);
     }
 
@@ -117,32 +117,64 @@ public class Restaurante {
         setActive(false);
     }
 
-  public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
-    return getFormasPagamento().contains(formaPagamento);
-  }
-
-  public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento) {
-    return !aceitaFormaPagamento(formaPagamento);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-    Restaurante that = (Restaurante) o;
-    return id != null && Objects.equals(id, that.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
-
-    public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
-      return getFormasPagamento().remove(formaPagamento);
+    public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
+        return getFormasPagamento().contains(formaPagamento);
     }
 
-  public boolean adicionarFormaPagamento(FormaPagamento formaPagamento) {
-    return getFormasPagamento().add(formaPagamento);
-  }
+    public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento) {
+        return !aceitaFormaPagamento(formaPagamento);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Restaurante that = (Restaurante) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
+        return getFormasPagamento().remove(formaPagamento);
+    }
+
+    public boolean adicionarFormaPagamento(FormaPagamento formaPagamento) {
+        return getFormasPagamento().add(formaPagamento);
+    }
+
+    public boolean isAberto() {
+        return this.active;
+    }
+
+    public boolean isFechado() {
+        return !isAberto();
+    }
+
+    public boolean isInativo() {
+        return !isAtivo();
+    }
+
+    public boolean isAtivo() {
+        return this.active;
+    }
+
+    public boolean aberturaPermitida() {
+        return isAtivo() && isFechado();
+    }
+
+    public boolean ativacaoPermitida() {
+        return isInativo();
+    }
+
+    public boolean inativacaoPermitida() {
+        return isAtivo();
+    }
+
+    public boolean fechamentoPermitido() {
+        return isAberto();
+    }
 }

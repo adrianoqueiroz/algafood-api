@@ -1,9 +1,11 @@
 package com.algaworks.algafood.api.assembler;
 
+import com.algaworks.algafood.api.LinksGenerator;
 import com.algaworks.algafood.api.controller.UsuarioController;
 import com.algaworks.algafood.api.model.UsuarioModel;
 import com.algaworks.algafood.domain.model.Usuario;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -16,6 +18,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<Usuario, UsuarioModel> {
 
 	private static final ModelMapper modelMapper = new ModelMapper();
+
+	@Autowired
+	private LinksGenerator linksGenerator;
 
 	public UsuarioModelAssembler() {
 		super(UsuarioController.class, UsuarioModel.class);
@@ -37,6 +42,6 @@ public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<U
 	@Override
 	public CollectionModel<UsuarioModel> toCollectionModel(Iterable<? extends Usuario> entities) {
 		return super.toCollectionModel(entities)
-			.add(linkTo(UsuarioController.class).withSelfRel());
+			.add(linksGenerator.linkToUsuarios());
 	}
 }

@@ -1,5 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.RestauranteApenasNomeModelAssembler;
+import com.algaworks.algafood.api.assembler.RestauranteBasicoModelAssembler;
+import com.algaworks.algafood.api.model.RestauranteApenasNomeModel;
+import com.algaworks.algafood.api.model.RestauranteBasicoModel;
 import com.algaworks.algafood.api.model.RestauranteModel;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.api.model.view.RestauranteView;
@@ -19,7 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
@@ -52,24 +58,30 @@ public class RestauranteController {
     private final RestauranteService restauranteService;
     private final SmartValidator validator;
 
+
+    private final RestauranteBasicoModelAssembler restauranteBasicoModelAssembler;
+
+    private final RestauranteApenasNomeModelAssembler restauranteApenasNomeModelAssembler;
+
     @GetMapping("/{id}")
     public RestauranteModel buscar(@PathVariable Long id) {
         Restaurante restaurante = restauranteService.buscar(id);
         return new RestauranteModel(restaurante);
     }
 
-    @JsonView(RestauranteView.Resumo.class)
+//    @JsonView(RestauranteView.Resumo.class)
     @GetMapping
-    public List<RestauranteModel> listar() {
-        return restauranteService.listar().stream()
-            .map(RestauranteModel::new)
-            .collect(Collectors.toList());
+
+    public CollectionModel<RestauranteBasicoModel> listar() {
+        return restauranteBasicoModelAssembler
+            .toCollectionModel(restauranteService.listar());
     }
 
-    @JsonView(RestauranteView.ApenasNome.class)
+//    @JsonView(RestauranteView.ApenasNome.class)
     @GetMapping(params = "projecao=apenas-nome")
-    public List<RestauranteModel> listarApenasNome() {
-        return listar();
+    public CollectionModel<RestauranteApenasNomeModel> listarApenasNomes() {
+        return restauranteApenasNomeModelAssembler
+            .toCollectionModel(restauranteService.listar());
     }
 
     @PostMapping
@@ -142,14 +154,18 @@ public class RestauranteController {
 
     @PutMapping("/{restauranteId}/abertura")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void abrir(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
         restauranteService.abrir(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{restauranteId}/fechamento")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void fechar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
         restauranteService.fechar(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 
     private void validate(Restaurante restaurante, String objectName) {
@@ -184,15 +200,19 @@ public class RestauranteController {
         }
     }
 
-    @PutMapping("/{restauranteId}/ativo ")
+    @PutMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void ativar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
         restauranteService.ativar(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void inativar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
         restauranteService.inativar(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 }

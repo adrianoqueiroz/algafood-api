@@ -1,5 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.LinksGenerator;
+import com.algaworks.algafood.api.assembler.FormaPagamentoModelAssembler;
 import com.algaworks.algafood.api.model.FormaPagamentoModel;
 import com.algaworks.algafood.api.model.input.FormaPagamentoInput;
 import com.algaworks.algafood.domain.model.FormaPagamento;
@@ -7,6 +9,7 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,14 +28,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RestauranteFormaPagamentoController {
     private final RestauranteService restauranteService;
+    private final FormaPagamentoModelAssembler formaPagamentoModelAssembler;
+    private final LinksGenerator linksGenerator;
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping
-    public List<FormaPagamentoModel> listar(@PathVariable Long restauranteId) {
+    public CollectionModel<FormaPagamentoModel> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = restauranteService.buscar(restauranteId);
 
-        return toCollectionModel(restaurante.getFormasPagamento());
+        return formaPagamentoModelAssembler.toCollectionModel(restaurante.getFormasPagamento())
+            .removeLinks()
+            .add(linksGenerator.linkToRestauranteFormasPagamento(restauranteId));
     }
 
     @DeleteMapping("/{formaPagamentoId}")

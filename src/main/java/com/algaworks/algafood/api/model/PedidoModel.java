@@ -24,7 +24,8 @@ public class PedidoModel extends RepresentationModel<PedidoModel> {
     private OffsetDateTime confirmedAt;
     private OffsetDateTime deliveredAt;
     private OffsetDateTime cancelledAt;
-    private RestauranteModel restaurante;
+//    private RestauranteModel restaurante;
+    private RestauranteApenasNomeModel restaurante;
     private UsuarioModel cliente;
     private FormaPagamentoModel formaPagamento;
     private EnderecoModel enderecoEntrega;

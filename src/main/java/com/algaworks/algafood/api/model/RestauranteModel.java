@@ -17,13 +17,13 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class RestauranteModel extends RepresentationModel<RestauranteModel> {
-    @JsonView({RestauranteView.Resumo.class, RestauranteView.ApenasNome.class})
+//    @JsonView({RestauranteView.Resumo.class, RestauranteView.ApenasNome.class})
     private Long id;
-    @JsonView({RestauranteView.Resumo.class, RestauranteView.ApenasNome.class})
+//    @JsonView({RestauranteView.Resumo.class, RestauranteView.ApenasNome.class})
     private String nome;
-    @JsonView(RestauranteView.Resumo.class)
+//    @JsonView(RestauranteView.Resumo.class)
     private BigDecimal taxaFrete;
-    @JsonView(RestauranteView.Resumo.class)
+//    @JsonView(RestauranteView.Resumo.class)
     private CozinhaModel cozinha;
 
     private Boolean active;
