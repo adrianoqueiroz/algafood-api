@@ -1,7 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
-import com.algaworks.algafood.core.validation.TaxaFrete;
-import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
+import com.algaworks.algafood.domain.listener.validation.TaxaFrete;
+import com.algaworks.algafood.domain.listener.validation.ValorZeroIncluiDescricao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

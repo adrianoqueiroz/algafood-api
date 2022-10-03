@@ -1,7 +1,7 @@
 package com.algaworks.algafood.api.v1.model.input;
 
-import com.algaworks.algafood.core.validation.FileContentType;
-import com.algaworks.algafood.core.validation.FileSize;
+import com.algaworks.algafood.domain.listener.validation.FileContentType;
+import com.algaworks.algafood.domain.listener.validation.FileSize;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.MediaType;

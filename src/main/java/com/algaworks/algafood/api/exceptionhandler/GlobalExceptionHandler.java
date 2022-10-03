@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import com.algaworks.algafood.core.validation.ValidacaoException;
+import com.algaworks.algafood.domain.listener.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.MessageSource;
@@ -33,6 +34,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -58,7 +60,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // fazendo logging) para mostrar a stacktrace no console
         // Se não fizer isso, você não vai ver a stacktrace de exceptions que seriam importantes
         // para você durante, especialmente na fase de desenvolvimento
-        ex.printStackTrace();
+//        ex.printStackTrace();
+
+        log.error(ex.getMessage(), ex);
 
         ResponseError problem = createResopnseErrorBuilder(status, errorType, GENERIC_ERROR_MSG).build();
 

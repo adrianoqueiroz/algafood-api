@@ -1,4 +1,4 @@
-package com.algaworks.algafood.core.validation;
+package com.algaworks.algafood.domain.listener.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -15,13 +15,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = { MultiploValidator.class })
-public @interface Multiplo {
-    String message() default "múltiplo inválido";
+@Constraint(validatedBy = { FileSizeValidator.class })
+public @interface FileSize {
+    String message() default "tamanho do arquivo inválido";
 
     Class<?>[] groups() default { };
 
     Class<? extends Payload>[] payload() default { };
 
-    int numero();
+    String max();
 }
