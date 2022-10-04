@@ -18,17 +18,19 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/v1/estatisticas")
-public class EstatisticasController {
+public class EstatisticasController implements com.algaworks.algafood.api.v1.openapi.EstatisticasControllerOpenApi {
 
     private final VendaQueryService vendaQueryService;
     private final VendaReportService vendaReportService;
 
+    @Override
     @GetMapping(path = "/vendas-diarias",  produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filter,
-    @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
+                                                    @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
         return vendaQueryService.consultarVendasDiarias(filter, timeOffset);
     }
 
+    @Override
     @GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> consultarVendasDiariasPdf(
         VendaDiariaFilter filter,

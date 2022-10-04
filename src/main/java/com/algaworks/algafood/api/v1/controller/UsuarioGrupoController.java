@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/v1/usuarios/{usuarioId}/grupos")
-public class UsuarioGrupoController {
+public class UsuarioGrupoController implements com.algaworks.algafood.api.v1.openapi.UsuarioGrupoControllerOpenApi {
 
     @Autowired
     private UsuarioService cadastroUsuario;
@@ -29,6 +29,7 @@ public class UsuarioGrupoController {
     private static final ModelMapper modelMapper = new ModelMapper();
 
 
+    @Override
     @GetMapping
     public List<GrupoModel> listar(@PathVariable Long usuarioId) {
         Usuario usuario = cadastroUsuario.buscar(usuarioId);
@@ -36,24 +37,28 @@ public class UsuarioGrupoController {
         return toCollectionModel(usuario.getGrupos());
     }
 
+    @Override
     @DeleteMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desassociar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
         cadastroUsuario.desassociarGrupo(usuarioId, grupoId);
     }
 
+    @Override
     @PutMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void associar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
         cadastroUsuario.associarGrupo(usuarioId, grupoId);
     }
 
+    @Override
     public List<GrupoModel> toCollectionModel(Collection<Grupo> grupos) {
         return grupos.stream()
             .map(grupo -> toModel(grupo))
             .collect(Collectors.toList());
     }
 
+    @Override
     public GrupoModel toModel(Grupo grupo) {
         return modelMapper.map(grupo, GrupoModel.class);
     }

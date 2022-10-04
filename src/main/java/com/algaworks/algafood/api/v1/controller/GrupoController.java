@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/grupos")
-public class GrupoController {
+public class GrupoController implements com.algaworks.algafood.api.v1.openapi.GrupoControllerOpenApi {
 
     @Autowired
     private GrupoRepository grupoRepository;
@@ -34,6 +34,7 @@ public class GrupoController {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    @Override
     @GetMapping
     public List<GrupoModel> listar() {
         List<Grupo> todosGrupos = grupoRepository.findAll();
@@ -41,6 +42,7 @@ public class GrupoController {
         return toCollectionModel(todosGrupos);
     }
 
+    @Override
     @GetMapping("/{grupoId}")
     public GrupoModel buscar(@PathVariable Long grupoId) {
         Grupo grupo = grupoService.buscarOuFalhar(grupoId);
@@ -48,6 +50,7 @@ public class GrupoController {
         return toModel(grupo);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GrupoModel adicionar(@RequestBody @Valid GrupoInput grupoInput) {
@@ -58,6 +61,7 @@ public class GrupoController {
         return toModel(grupo);
     }
 
+    @Override
     @PutMapping("/{grupoId}")
     public GrupoModel atualizar(@PathVariable Long grupoId,
                                 @RequestBody @Valid GrupoInput grupoInput) {
@@ -70,26 +74,31 @@ public class GrupoController {
         return toModel(grupoAtual);
     }
 
+    @Override
     @DeleteMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long grupoId) {
         grupoService.excluir(grupoId);
     }
 
+    @Override
     public GrupoModel toModel(Grupo grupo) {
         return modelMapper.map(grupo, GrupoModel.class);
     }
 
+    @Override
     public List<GrupoModel> toCollectionModel(List<Grupo> grupos) {
         return grupos.stream()
             .map(grupo -> toModel(grupo))
             .collect(Collectors.toList());
     }
 
+    @Override
     public Grupo toDomainObject(GrupoInput grupoInput) {
         return modelMapper.map(grupoInput, Grupo.class);
     }
 
+    @Override
     public void copyToDomainObject(GrupoInput grupoInput, Grupo grupo) {
         modelMapper.map(grupoInput, grupo);
     }

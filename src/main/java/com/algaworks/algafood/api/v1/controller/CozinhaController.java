@@ -29,17 +29,19 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/cozinhas")
-public class CozinhaController {
+public class CozinhaController implements com.algaworks.algafood.api.v1.openapi.CozinhaControllerOpenApi {
 
     private final CozinhaService cozinhaService;
     private final CozinhaModelAssembler cozinhaModelAssembler;
     private final PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
+    @Override
     @GetMapping("/{id}")
     public CozinhaModel buscar(@PathVariable Long id) {
         return cozinhaModelAssembler.toModel(cozinhaService.buscar(id));
     }
 
+    @Override
     @GetMapping
     public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
         log.info("Consultando cozinhas com paginação de {} registros", pageable.getPageSize());
@@ -53,18 +55,21 @@ public class CozinhaController {
         return pagedResourcesAssembler.toModel(cozinhasPage, cozinhaModelAssembler);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaModel adicionar(@RequestBody @Valid Cozinha cozinha) {
         return cozinhaModelAssembler.toModel(cozinhaService.salvar(cozinha));
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long id) {
         cozinhaService.remover(id);
     }
 
+    @Override
     @PutMapping("/{id}")
     public CozinhaModel atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
         Cozinha cozinhaAtual = cozinhaService.buscar(id);

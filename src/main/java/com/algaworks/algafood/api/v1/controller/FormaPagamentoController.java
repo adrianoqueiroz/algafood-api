@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/formas-pagamento")
-public class FormaPagamentoController {
+public class FormaPagamentoController implements com.algaworks.algafood.api.v1.openapi.FormaPagamentoControllerOpenApi {
 
     private final FormaPagamentoRepository formaPagamentoRepository;
     private final FormaPagamentoService formaPagamentoService;
@@ -40,6 +40,7 @@ public class FormaPagamentoController {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<FormaPagamentoModel>> listar(ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -60,6 +61,7 @@ public class FormaPagamentoController {
             .body(formaPagamentoModelAssembler.toCollectionModel(todasFormasPagamentos));
     }
 
+    @Override
     @GetMapping("/{formaPagamentoId}")
     public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -79,6 +81,7 @@ public class FormaPagamentoController {
             .body(formaPagamentoModelAssembler.toModel(formaPagamento));
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FormaPagamentoModel adicionar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -89,6 +92,7 @@ public class FormaPagamentoController {
         return formaPagamentoModelAssembler.toModel(formaPagamento);
     }
 
+    @Override
     @PutMapping("/{formaPagamentoId}")
     public FormaPagamentoModel atualizar(@PathVariable Long formaPagamentoId,
                                          @RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -101,6 +105,7 @@ public class FormaPagamentoController {
         return formaPagamentoModelAssembler.toModel(formaPagamentoAtual);
     }
 
+    @Override
     @DeleteMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long formaPagamentoId) {
@@ -108,10 +113,12 @@ public class FormaPagamentoController {
     }
 
 
+    @Override
     public FormaPagamento toDomainObject(FormaPagamentoInput formaPagamentoInput) {
         return modelMapper.map(formaPagamentoInput, FormaPagamento.class);
     }
 
+    @Override
     public void copyToDomainObject(FormaPagamentoInput formaPagamentoInput, FormaPagamento formaPagamento) {
         modelMapper.map(formaPagamentoInput, formaPagamento);
     }

@@ -15,10 +15,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/v1/pedidos/{codigoPedido}")
 @RequiredArgsConstructor
-public class FluxoPedidoController {
+public class FluxoPedidoController implements com.algaworks.algafood.api.v1.openapi.FluxoPedidoControllerOpenApi {
 
     private final FluxoPedidoService fluxoPedidoService;
 
+    @Override
     @PutMapping("/confirmacao")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> confirmar(@PathVariable UUID codigoPedido) {
@@ -27,6 +28,7 @@ public class FluxoPedidoController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PutMapping("/cancelamento")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void>  cancelar(@PathVariable UUID codigoPedido) {
@@ -35,6 +37,7 @@ public class FluxoPedidoController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PutMapping("/entrega")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void>  entregar(@PathVariable UUID codigoPedido) {

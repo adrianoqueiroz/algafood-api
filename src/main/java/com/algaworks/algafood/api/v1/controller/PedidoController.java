@@ -37,7 +37,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/v1/pedidos")
-public class PedidoController {
+public class PedidoController implements com.algaworks.algafood.api.v1.openapi.PedidoControllerOpenApi {
 
     private final PedidoRepository pedidoRepository;
     private final EmissaoPedidoService emissaoPedido;
@@ -47,6 +47,7 @@ public class PedidoController {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    @Override
     @GetMapping
     public PagedModel<PedidoResumoModel> pesquisar(VendaDiariaFilter.PedidoFilter filtro, Pageable pageable) {
         Pageable pageableTraduzido = traduzirPageable(pageable);
@@ -58,6 +59,7 @@ public class PedidoController {
         return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
     }
 
+    @Override
     @GetMapping("/{codigoPedido}")
     public PedidoModel buscar(@PathVariable UUID codigoPedido) {
         Pedido pedido = emissaoPedido.buscar(codigoPedido);
@@ -65,6 +67,7 @@ public class PedidoController {
         return pedidoModelAssembler.toModel(pedido);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PedidoModel adicionar(@Valid @RequestBody PedidoInput pedidoInput) {
@@ -83,17 +86,7 @@ public class PedidoController {
         }
     }
 
-    private Pageable traduzirPageable(Pageable apiPageable) {
-        var mapeamento = ImmutableMap.of(
-            "codigo ", "codigo",
-            "restaurante.nome", "restaurante.nome",
-            "nomeCliente", "cliente.nome",
-            "valorTotal", "valorTotal"
-        );
-
-        return PageableTranslator.translate(apiPageable, mapeamento);
-    }
-
+    @Override
     public Pedido toDomainObject(PedidoInput pedidoInput) {
         return modelMapper.map(pedidoInput, Pedido.class);
     }

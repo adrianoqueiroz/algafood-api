@@ -26,13 +26,14 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/v1/restaurantes/{restauranteId}/formas-pagamento")
 @RequiredArgsConstructor
-public class RestauranteFormaPagamentoController {
+public class RestauranteFormaPagamentoController implements com.algaworks.algafood.api.v1.openapi.RestauranteFormaPagamentoControllerOpenApi {
     private final RestauranteService restauranteService;
     private final FormaPagamentoModelAssembler formaPagamentoModelAssembler;
     private final LinksGenerator linksGenerator;
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    @Override
     @GetMapping
     public CollectionModel<FormaPagamentoModel> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = restauranteService.buscar(restauranteId);
@@ -42,30 +43,36 @@ public class RestauranteFormaPagamentoController {
             .add(linksGenerator.linkToRestauranteFormasPagamento(restauranteId));
     }
 
+    @Override
     @DeleteMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desassociar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
         restauranteService.desassociarFormaPagamento(restauranteId, formaPagamentoId);
     }
 
+    @Override
     @PutMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void associar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
         restauranteService.associarFormaPagamento(restauranteId, formaPagamentoId);
     }
 
+    @Override
     public FormaPagamento toDomainObject(FormaPagamentoInput formaPagamentoInput) {
         return modelMapper.map(formaPagamentoInput, FormaPagamento.class);
     }
 
+    @Override
     public void copyToDomainObject(FormaPagamentoInput formaPagamentoInput, FormaPagamento formaPagamento) {
         modelMapper.map(formaPagamentoInput, formaPagamento);
     }
 
+    @Override
     public FormaPagamentoModel toModel(FormaPagamento formaPagamento) {
         return modelMapper.map(formaPagamento, FormaPagamentoModel.class);
     }
 
+    @Override
     public List<FormaPagamentoModel> toCollectionModel(Set<FormaPagamento> formasPagamentos) {
         return formasPagamentos.stream()
             .map(formaPagamento -> toModel(formaPagamento))

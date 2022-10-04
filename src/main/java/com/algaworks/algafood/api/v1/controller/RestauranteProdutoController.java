@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/restaurantes/{restauranteId}/produtos")
-public class RestauranteProdutoController {
+public class RestauranteProdutoController implements com.algaworks.algafood.api.v1.openapi.RestauranteProdutoControllerOpenApi {
 
     private final ProdutoRepository produtoRepository;
     private final ProdutoService cadastroProduto;
@@ -36,6 +36,7 @@ public class RestauranteProdutoController {
     private static final ModelMapper modelMapper = new ModelMapper();
 
 
+    @Override
     @GetMapping
     public List<ProdutoModel> listar(@PathVariable Long restauranteId,
                                      @RequestParam(required = false) boolean incluirInativos) {
@@ -49,6 +50,7 @@ public class RestauranteProdutoController {
         return toCollectionModel(todosProdutos);
     }
 
+    @Override
     @GetMapping("/{produtoId}")
     public ProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         Produto produto = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
@@ -56,6 +58,7 @@ public class RestauranteProdutoController {
         return toModel(produto);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoModel adicionar(@PathVariable Long restauranteId,
@@ -70,6 +73,7 @@ public class RestauranteProdutoController {
         return toModel(produto);
     }
 
+    @Override
     @PutMapping("/{produtoId}")
     public ProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
                                   @RequestBody @Valid ProdutoInput produtoInput) {
@@ -82,19 +86,23 @@ public class RestauranteProdutoController {
         return toModel(produtoAtual);
     }
 
+    @Override
     public ProdutoModel toModel(Produto produto) {
         return modelMapper.map(produto, ProdutoModel.class);
     }
 
+    @Override
     public List<ProdutoModel> toCollectionModel(List<Produto> produtos) {
         return produtos.stream()
             .map(this::toModel)
             .collect(Collectors.toList());
     }
+    @Override
     public Produto toDomainObject(ProdutoInput produtoInput) {
         return modelMapper.map(produtoInput, Produto.class);
     }
 
+    @Override
     public void copyToDomainObject(ProdutoInput produtoInput, Produto produto) {
         modelMapper.map(produtoInput, produto);
     }

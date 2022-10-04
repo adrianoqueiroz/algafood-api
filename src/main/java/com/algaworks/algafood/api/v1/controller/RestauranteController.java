@@ -49,7 +49,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/restaurantes")
-public class RestauranteController {
+public class RestauranteController implements com.algaworks.algafood.api.v1.openapi.RestauranteControllerOpenApi {
 
     private static final ModelMapper modelMapper = new ModelMapper();
     private final RestauranteService restauranteService;
@@ -60,6 +60,7 @@ public class RestauranteController {
 
     private final RestauranteApenasNomeModelAssembler restauranteApenasNomeModelAssembler;
 
+    @Override
     @GetMapping("/{id}")
     public RestauranteModel buscar(@PathVariable Long id) {
         Restaurante restaurante = restauranteService.buscar(id);
@@ -67,6 +68,7 @@ public class RestauranteController {
     }
 
 //    @JsonView(RestauranteView.Resumo.class)
+    @Override
     @GetMapping
 
     public CollectionModel<RestauranteBasicoModel> listar() {
@@ -75,12 +77,14 @@ public class RestauranteController {
     }
 
 //    @JsonView(RestauranteView.ApenasNome.class)
+    @Override
     @GetMapping(params = "projecao=apenas-nome")
     public CollectionModel<RestauranteApenasNomeModel> listarApenasNomes() {
         return restauranteApenasNomeModelAssembler
             .toCollectionModel(restauranteService.listar());
     }
 
+    @Override
     @PostMapping
     public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
 
@@ -93,11 +97,13 @@ public class RestauranteController {
         }
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public void remover(@PathVariable Long id) {
         restauranteService.remover(id);
     }
 
+    @Override
     @PutMapping("/{id}")
     public RestauranteModel atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
 
@@ -117,6 +123,7 @@ public class RestauranteController {
         }
     }
 
+    @Override
     @PatchMapping("/{id}")
     public RestauranteModel atualizarParcialmente(@PathVariable Long id, @RequestBody Map<String, Object> campos, HttpServletRequest request) {
 
@@ -129,6 +136,7 @@ public class RestauranteController {
         return atualizar(id, new RestauranteInput(restauranteAtual));
     }
 
+    @Override
     @PutMapping("/ativacoes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void ativarMultiplos(@RequestBody List<Long> ids) {
@@ -139,6 +147,7 @@ public class RestauranteController {
         }
     }
 
+    @Override
     @DeleteMapping("/inativacoes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inativarMultiplos(@RequestBody List<Long> ids) {
@@ -149,6 +158,7 @@ public class RestauranteController {
         }
     }
 
+    @Override
     @PutMapping("/{restauranteId}/abertura")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
@@ -157,6 +167,7 @@ public class RestauranteController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PutMapping("/{restauranteId}/fechamento")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
@@ -197,6 +208,7 @@ public class RestauranteController {
         }
     }
 
+    @Override
     @PutMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
@@ -205,6 +217,7 @@ public class RestauranteController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @DeleteMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {

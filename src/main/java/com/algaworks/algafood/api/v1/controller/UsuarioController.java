@@ -27,7 +27,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/v1/usuarios")
-public class UsuarioController {
+public class UsuarioController implements com.algaworks.algafood.api.v1.openapi.UsuarioControllerOpenApi {
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
@@ -36,6 +36,7 @@ public class UsuarioController {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    @Override
     @GetMapping
     public CollectionModel<UsuarioModel> listar() {
         List<Usuario> todasUsuarios = usuarioRepository.findAll();
@@ -43,6 +44,7 @@ public class UsuarioController {
         return usuarioModelAssembler.toCollectionModel(todasUsuarios);
     }
 
+    @Override
     @GetMapping("/{usuarioId}")
     public UsuarioModel buscar(@PathVariable Long usuarioId) {
         Usuario usuario = usuarioService.buscar(usuarioId);
@@ -50,6 +52,7 @@ public class UsuarioController {
         return usuarioModelAssembler.toModel(usuario);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioModel adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput) {
@@ -59,6 +62,7 @@ public class UsuarioController {
         return usuarioModelAssembler.toModel(usuario);
     }
 
+    @Override
     @PutMapping("/{usuarioId}")
     public UsuarioModel atualizar(@PathVariable Long usuarioId,
                                   @RequestBody @Valid UsuarioInput usuarioInput) {
@@ -69,16 +73,19 @@ public class UsuarioController {
         return usuarioModelAssembler.toModel(usuarioAtual);
     }
 
+    @Override
     @PutMapping("/{usuarioId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInput senha) {
         usuarioService.alterarSenha(usuarioId, senha.getSenhaAtual(), senha.getNovaSenha());
     }
 
+    @Override
     public Usuario toDomainObject(UsuarioInput usuarioInput) {
         return modelMapper.map(usuarioInput, Usuario.class);
     }
 
+    @Override
     public void copyToDomainObject(UsuarioInput usuarioInput, Usuario usuario) {
         modelMapper.map(usuarioInput, usuario);
     }

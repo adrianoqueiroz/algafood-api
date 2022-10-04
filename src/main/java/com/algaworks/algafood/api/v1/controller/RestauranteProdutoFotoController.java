@@ -35,13 +35,14 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+public class RestauranteProdutoFotoController implements com.algaworks.algafood.api.v1.openapi.RestauranteProdutoFotoControllerOpenApi {
 
     private final CatalogoFotoProdutoService catalogoFotoProdutoService;
     private final ProdutoService produtoService;
     private final FotoStorageService fotoStorageService;
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public FotoProdutoModel buscar(@PathVariable Long restauranteId,
                                    @PathVariable Long produtoId) {
@@ -50,11 +51,12 @@ public class RestauranteProdutoFotoController {
         return toModel(fotoProduto);
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<?> buscarArquivoFoto(
         @PathVariable Long restauranteId,
         @PathVariable Long produtoId,
-        @RequestHeader (name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
+        @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
 
         try {
             FotoProduto fotoProduto = catalogoFotoProdutoService.buscar(restauranteId, produtoId);
@@ -84,6 +86,7 @@ public class RestauranteProdutoFotoController {
         }
     }
 
+    @Override
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public FotoProdutoModel atualizarFoto(@PathVariable Long restauranteId,
                                           @PathVariable Long produtoId,
@@ -105,6 +108,7 @@ public class RestauranteProdutoFotoController {
         return toModel(fotoSalva);
     }
 
+    @Override
     @DeleteMapping
     @ResponseStatus(NO_CONTENT)
     public void excluir(@PathVariable Long restauranteId,
@@ -112,6 +116,7 @@ public class RestauranteProdutoFotoController {
         catalogoFotoProdutoService.excluir(restauranteId, produtoId);
     }
 
+    @Override
     public FotoProdutoModel toModel(FotoProduto foto) {
         return modelMapper.map(foto, FotoProdutoModel.class);
     }

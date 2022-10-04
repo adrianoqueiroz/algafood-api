@@ -21,13 +21,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/v1/restaurantes/{restauranteId}/responsaveis")
-public class RestauranteUsuarioResponsavelController {
+public class RestauranteUsuarioResponsavelController implements com.algaworks.algafood.api.v1.openapi.RestauranteUsuarioResponsavelControllerOpenApi {
 
     @Autowired
     private RestauranteService cadastroRestaurante;
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    @Override
     @GetMapping
     public List<UsuarioModel> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestaurante.buscar(restauranteId);
@@ -35,24 +36,28 @@ public class RestauranteUsuarioResponsavelController {
         return toCollectionModel(restaurante.getResponsaveis());
     }
 
+    @Override
     @DeleteMapping("/{usuarioId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desassociar(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
         cadastroRestaurante.desassociarResponsavel(restauranteId, usuarioId);
     }
 
+    @Override
     @PutMapping("/{usuarioId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void associar(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
         cadastroRestaurante.associarResponsavel(restauranteId, usuarioId);
     }
 
+    @Override
     public List<UsuarioModel> toCollectionModel(Collection<Usuario> usuarios) {
         return usuarios.stream()
             .map(usuario -> toModel(usuario))
             .collect(Collectors.toList());
     }
 
+    @Override
     public UsuarioModel toModel(Usuario usuario) {
         return modelMapper.map(usuario, UsuarioModel.class);
     }

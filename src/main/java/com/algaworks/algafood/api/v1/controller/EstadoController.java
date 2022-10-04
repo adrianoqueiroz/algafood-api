@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/estados")
-public class EstadoController {
+public class EstadoController implements com.algaworks.algafood.api.v1.openapi.EstadoControllerOpenApi {
 
     private final EstadoService estadoService;
     private final EstadoModelAssembler estadoModelAssembler;
