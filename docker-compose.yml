@@ -1,0 +1,47 @@
+version: "3.9"
+
+networks:
+  algafood-network:
+    driver: bridge
+
+services:
+  algafood-postgres:
+    image: postgres:14.5
+    container_name: algafood-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: algafood
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - algafood-network
+
+  algafood-redis:
+    image: redis:6.2.1-alpine
+    networks:
+      - algafood-network
+
+  algafood-api:
+    image: algafood-api
+    command: ["/wait-for-it.sh", "algafood-postgres:5432", "-t", "30", "--", "java", "-jar", "api.jar"]
+    restart: always
+    environment:
+      DB_HOST: algafood-postgres
+    networks:
+      - algafood-network
+    depends_on:
+      - algafood-postgres
+
+  algafood-proxy:
+    build: ./ngnix
+    image: algafood-proxy
+    ports:
+      - "80:80"
+    networks:
+      - algafood-network
+    depends_on:
+      - algafood-api

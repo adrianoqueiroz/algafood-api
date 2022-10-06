@@ -1,3 +1,5 @@
+lock table grupo_has_permissao, usuario_grupo, restaurante_usuario_responsavel, item_pedido, pedido, usuario, foto_produto, produto, restaurante_has_forma_pagamento, restaurante, forma_pagamento, cidade, estado, cozinha, permissao, grupo;
+
 delete from grupo_has_permissao;
 delete from usuario_grupo;
 delete from restaurante_usuario_responsavel;

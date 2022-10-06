@@ -46,10 +46,6 @@ public class CozinhaController implements com.algaworks.algafood.api.v1.openapi.
     public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
         log.info("Consultando cozinhas com paginação de {} registros", pageable.getPageSize());
 
-        if(true) {
-            throw new RuntimeException("Erro de teste");
-        }
-
         Page<Cozinha> cozinhasPage = cozinhaService.listar(pageable);
 
         return pagedResourcesAssembler.toModel(cozinhasPage, cozinhaModelAssembler);
